@@ -985,6 +985,15 @@ html {
 
 /* ----------- Q&A PAGE (aligned with Home/Contact) ----------- */
 
+/* Description field in admin qna page can be too long and push the delelte, edit button back*/
+/* So this css code is to truncate the text if its too long*/
+#qnaTable td {
+  max-width: 300px;          /* adjust to your desired width */
+  white-space: nowrap;        /* keep text in one line */
+  overflow: hidden;           /* hide overflow */
+  text-overflow: ellipsis;    /* show "..." */
+}
+
 .qna-page-section {
   padding: 90px 0; /* same vertical spacing as other pages with header */
 }
