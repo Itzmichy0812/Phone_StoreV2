@@ -105,8 +105,10 @@ class QnaController {
     }
 }
 
-// Run controller for AJAX requests
-$controller = new QnaController();
-$controller->handleRequest();
+// Run controller for AJAX requests only
+if (isset($_GET['action']) || isset($_POST['action'])) {
+    $controller = new QnaController();
+    $controller->handleRequest();
+}
 
 ?>

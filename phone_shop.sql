@@ -352,8 +352,8 @@ INSERT INTO `users` (`id`, `username`, `password`, `full_name`, `is_admin`) VALU
 (2, 'quandepzai', '$2y$10$iZeB8zDFh0sicj4KbjHZKOQp0vRlvs.XLIScFmH.ReXODCFsEEHtC', NULL, 0),
 (3, 'bebungbu', '$2y$10$P4lCxANyzN2d/.FC1cto/.Er6V4IeHId3pN2rlOGCo5z8QWilMNzS', NULL, 0),
 (8, 'hotanddog', '$2y$10$Bkeajd4S/NiH1vq/ZILfpuUDkRelZwTrWIEuHKfNdFw.3YhcpC6cW', NULL, 1),
-(8, 'admin3', '$2y$10$vjGnqATBVPvIHlvS7FrTZudMpFyMraBFcHuJywgBQU7dV4Q9weC9W', NULL, 1),
-(9, 'Quảng ', '$2y$10$/R7laHwx5yh9G75JpY88peOQPUwqO/3kxoxJgGzf0kUBFqu/svs9S', NULL, 0);
+(9, 'Quảng ', '$2y$10$/R7laHwx5yh9G75JpY88peOQPUwqO/3kxoxJgGzf0kUBFqu/svs9S', NULL, 0),
+(10, 'admin3', '$2y$10$vjGnqATBVPvIHlvS7FrTZudMpFyMraBFcHuJywgBQU7dV4Q9weC9W', NULL, 1);
 
 
 --
@@ -537,7 +537,7 @@ ALTER TABLE `qna`
 -- AUTO_INCREMENT cho bảng `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- Các ràng buộc cho các bảng đã đổ

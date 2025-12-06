@@ -6,7 +6,7 @@ $db_host = '127.0.0.1';
 $db_user = 'root';
 $db_pass = '';          // Mặc định XAMPP là rỗng
 $db_name = 'phone_shop';
-$db_port = '3306';      // ⚠️ Lưu ý: XAMPP thường là 3306. Nếu máy bạn đổi cổng thì sửa thành 3307
+$db_port = '3307';      // ⚠️ Lưu ý: XAMPP thường là 3306. Nếu máy bạn đổi cổng thì sửa thành 3307
 
 // --- PHẦN 2: Kết nối MySQLi (Cho code cũ của Quân - Login/Register) ---
 $conn = new mysqli($db_host, $db_user, $db_pass, $db_name, $db_port);
