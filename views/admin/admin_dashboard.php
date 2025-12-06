@@ -40,10 +40,12 @@
         <p>Change page contents like background image, text...</p>
       </a>
 
-      <a href="index.php?page=manage_posts" class="admin-card">
-        <h2>Post management</h2>
-        <p>Manage posts: create, edit, delete, and organize posts.</p>
+      <!-- NEW: Manage users -->
+      <a href="index.php?page=manage_profile" class="admin-card">
+        <h2>Manage users</h2>
+        <p>View, edit, ban or delete member accounts.</p>
       </a>
+    </div>
 
   </div>
 </main>

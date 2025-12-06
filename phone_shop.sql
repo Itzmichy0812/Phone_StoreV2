@@ -34,6 +34,7 @@ CREATE TABLE `contacts` (
   `id` int(11) NOT NULL,
   `name` varchar(100) NOT NULL,
   `email` varchar(100) NOT NULL,
+  `subject` varchar(100) NOT NULL,
   `message` text NOT NULL,
   `status` enum('unread','read','replied') DEFAULT 'unread',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()

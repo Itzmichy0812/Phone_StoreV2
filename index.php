@@ -107,13 +107,30 @@ switch ($page) {
         $controller = new PostController();
         $controller->detail();
         break;
-        
+    
+    case 'profile':
+        include 'views/client/profile.php';
+        break;
+    
     // --- ADMIN SIDE ---
     case 'admin_dashboard':
-    case 'manage_about_info':    
+        include 'views/admin/admin_dashboard.php';
+        break;
+    case 'manage_about_info': 
+        include 'views/admin/manage_about_info.php';
+        break;   
     case 'manage_contacts':
+        include 'views/admin/manage_contacts.php';
+        break;
     case 'manage_qna':
+        include 'views/admin/manage_qna.php';
+        break;
     case 'manage_info':
+        include 'views/admin/manage_info.php';
+        break;
+    case 'manage_profile':
+        include 'views/admin/manage_profile.php';
+        break;
     case 'manage_posts':
         // Check if user is logged in and is admin
         if (!isset($_SESSION['user_id'])) {

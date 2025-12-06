@@ -51,6 +51,7 @@ $siteLogo = getImageUrl($logoPath);
         <a href="index.php?page=about" class="nav-link">About</a>
         <a href="index.php?page=contact" class="nav-link">Contact</a>
         <a href="index.php?page=qna" class="nav-link">Q&A</a>
+        <a href="index.php?page=profile" class="nav-link">Profile</a>
         
         <!-- Admin link visible only for admin -->
         <?php if ($isLoggedIn && isset($_SESSION['is_admin']) && $_SESSION['is_admin'] == 1): ?>
