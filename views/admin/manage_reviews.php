@@ -15,7 +15,7 @@
             <a href="?page=admin_products" class="sidebar-link">
                 <i class="bi bi-box"></i> Products
             </a>
-            <a href="?page=admin_orders" class="sidebar-link">
+            <a href="?page=manage_orders" class="sidebar-link">
                 <i class="bi bi-cart"></i> Orders
             </a>
             <a href="?page=admin_reviews" class="sidebar-link active">

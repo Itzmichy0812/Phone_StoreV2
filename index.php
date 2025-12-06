@@ -114,17 +114,19 @@ switch ($page) {
     // --- ADMIN SIDE ---
     case 'admin_dashboard':
     case 'admin_reviews':
+    case 'manage_orders':
     case 'manage_about_info':    
     case 'manage_contacts':
     case 'manage_qna':
     case 'manage_info':
-    
+    case 'order_details':
+        
     if (!isset($_SESSION['is_admin']) || !$_SESSION['is_admin']) {
             header("Location: index.php?page=home");
             exit();
         }
         
-
+   
 
     if ($page == 'admin_reviews') {
         include 'controllers/admin/ReviewController.php';
@@ -132,7 +134,8 @@ switch ($page) {
         include $adminFolder . $page . '.php';
     }
     break;
-        
+    
+  
     
     
     // --- 404 ERROR ---

@@ -50,6 +50,12 @@ if (!isset($_SESSION['is_admin']) || !$_SESSION['is_admin']) {
         <h2>Manage Reviews</h2>
         <p>Manage customers' reviews</p>
       </a>
+
+      <a href="index.php?page=manage_orders" class="admin-card">
+        <h2>Manage Orders</h2>
+        <p>Manage customers' orders</p>
+      </a>
+      
   </div>
 </main>
 
