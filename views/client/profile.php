@@ -1,7 +1,6 @@
 <?php
 // profile.php - User profile page
 
-session_start();
 require_once 'config/db.php';
 
 // Kiểm tra đăng nhập
