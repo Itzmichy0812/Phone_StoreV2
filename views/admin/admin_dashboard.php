@@ -40,6 +40,13 @@
         <p>Change page contents like background image, text...</p>
       </a>
 
+      <!-- NEW: Manage users -->
+      <a href="index.php?page=manage_profile" class="admin-card">
+        <h2>Manage users</h2>
+        <p>View, edit, ban or delete member accounts.</p>
+      </a>
+    </div>
+
   </div>
 </main>
 
