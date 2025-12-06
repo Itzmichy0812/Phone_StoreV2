@@ -1,4 +1,7 @@
-<?php include 'views/layouts/header.php'; ?>
+<?php 
+require_once 'helpers/settings_helper.php';
+include 'views/layouts/header.php'; 
+?>
 
 <main class="home-page-scroll">
 
@@ -7,14 +10,13 @@
     <div class="home-frame-overlay">
       <div class="home-frame-inner">
         <div class="home-greeting">
-          <p class="home-greeting-subtitle">Shopping Online</p>
-          <h1 class="home-greeting-title">Welcome to PhoneStore</h1>
+          <p class="home-greeting-subtitle"><?php echo getSetting('home.hero_subtitle', 'Shopping Online'); ?></p>
+          <h1 class="home-greeting-title"><?php echo getSetting('home.hero_title', 'Welcome to PhoneStore'); ?></h1>
           <p class="home-greeting-text">
-            Explore the latest smartphones, accessories and exclusive deals.
-            Secure checkout, fast delivery, and support whenever you need.
+            <?php echo getSetting('home.featured_section_subtitle', 'Explore the latest smartphones, accessories and exclusive deals. Secure checkout, fast delivery, and support whenever you need.'); ?>
           </p>
           <a href="index.php?page=shop" class="home-greeting-btn">
-            Start shopping
+            <?php echo getSetting('home.hero_button_text', 'Start shopping'); ?>
           </a>
         </div>
       </div>
@@ -37,21 +39,17 @@
         </div>
 
         <div class="home2-right">
-          <p class="home2-subtitle">landing page</p>
-          <h2 class="home2-title">All-in-one place for your next phone</h2>
+          <p class="home2-subtitle"><?php echo getSetting('home.banner_1_subtitle', 'landing page'); ?></p>
+          <h2 class="home2-title"><?php echo getSetting('home.banner_1_title', 'All-in-one place for your next phone'); ?></h2>
           <p class="home2-text">
-            PhoneStore helps you compare models, prices and specs in seconds.
-            From budget-friendly devices to flagship phones, everything is
-            organized so you can find the right choice without scrolling
-            through endless pages.
+            <?php echo getSetting('home.feature_1_description', 'PhoneStore helps you compare models, prices and specs in seconds. From budget-friendly devices to flagship phones, everything is organized so you can find the right choice without scrolling through endless pages.'); ?>
           </p>
           <p class="home2-text">
-            Track your orders in real time, save your favourites and enjoy
-            secure payments designed for online shopping.
+            <?php echo getSetting('home.feature_2_description', 'Track your orders in real time, save your favourites and enjoy secure payments designed for online shopping.'); ?>
           </p>
 
           <button class="home2-btn" id="home2-learn-more">
-            learn more
+            <?php echo getSetting('home.hero_button_text', 'learn more'); ?>
           </button>
         </div>
 
@@ -64,21 +62,17 @@
     <div class="home3-overlay">
       <div class="home3-inner">
         <div class="home3-left">
-          <p class="home3-subtitle">Premium line-up</p>
-          <h2 class="home3-title">Newest flagship & high-end phones</h2>
+          <p class="home3-subtitle"><?php echo getSetting('home.banner_2_subtitle', 'Premium line-up'); ?></p>
+          <h2 class="home3-title"><?php echo getSetting('home.banner_2_title', 'Newest flagship & high-end phones'); ?></h2>
           <p class="home3-text">
-            Stay up to date with the latest releases from top brands:
-            powerful cameras, stunning displays and all-day battery life.
-            Our premium collection is updated constantly based on the
-            newest trends from the market.
+            <?php echo getSetting('home.feature_3_description', 'Stay up to date with the latest releases from top brands: powerful cameras, stunning displays and all-day battery life. Our premium collection is updated constantly based on the newest trends from the market.'); ?>
           </p>
           <p class="home3-text">
-            Browse curated picks, compare specs side by side and discover
-            the device that fits your style and performance needs.
+            <?php echo getSetting('home.feature_4_description', 'Browse curated picks, compare specs side by side and discover the device that fits your style and performance needs.'); ?>
           </p>
 
           <button class="home3-btn" id="home3-explore">
-            explore
+            <?php echo getSetting('home.hero_button_text', 'explore'); ?>
           </button>
         </div>
         <div class="home3-right">

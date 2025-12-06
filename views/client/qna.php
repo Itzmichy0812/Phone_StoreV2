@@ -1,9 +1,15 @@
+<?php
+// Load settings helper
+if (!function_exists('getSetting')) {
+    require_once __DIR__ . '/../../helpers/settings_helper.php';
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PhoneStore - Q&A</title>
+  <title><?php echo htmlspecialchars(getSetting('general.site_name', 'PhoneStore')); ?> - Q&A</title>
   
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 

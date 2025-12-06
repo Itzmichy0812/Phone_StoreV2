@@ -1,9 +1,12 @@
+<?php
+require_once 'helpers/settings_helper.php';
+?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><?php echo htmlspecialchars($post['title']); ?> - PhoneStore</title>
+    <title><?php echo htmlspecialchars($post['title']); ?> - <?php echo htmlspecialchars(getSetting('general.site_name', 'PhoneStore')); ?></title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -21,7 +24,7 @@
                     <!-- Thumbnail -->
                     <?php if ($post['image']): ?>
                     <div class="post-detail-thumbnail">
-                        <img src="<?php echo htmlspecialchars($post['image']); ?>" alt="<?php echo htmlspecialchars($post['title']); ?>" />
+                        <img src="assets/img/posts/<?php echo htmlspecialchars($post['image']); ?>" alt="<?php echo htmlspecialchars($post['title']); ?>" onerror="this.src='assets/img/placeholder.png'" />
                     </div>
                     <?php endif; ?>
                     
@@ -76,7 +79,7 @@
                             <a href="?page=post_detail&id=<?php echo $related['id']; ?>" class="related-post-item">
                                 <?php if ($related['image']): ?>
                                 <div class="related-post-thumbnail">
-                                    <img src="<?php echo htmlspecialchars($related['image']); ?>" alt="<?php echo htmlspecialchars($related['title']); ?>" />
+                                    <img src="assets/img/posts/<?php echo htmlspecialchars($related['image']); ?>" alt="<?php echo htmlspecialchars($related['title']); ?>" onerror="this.src='assets/img/placeholder.png'" />
                                 </div>
                                 <?php endif; ?>
                                 <div class="related-post-info">

@@ -85,7 +85,7 @@ function createPostElement(post) {
     
     postDiv.innerHTML = `
         <div class="post-thumbnail">
-            <img src="${post.image || 'assets/img/default-post.jpg'}" alt="${escapeHtml(post.title)}" />
+            <img src="${post.image ? 'assets/img/posts/' + post.image : 'assets/img/placeholder.png'}" alt="${escapeHtml(post.title)}" onerror="this.src='assets/img/placeholder.png'" />
         </div>
         <div class="post-info-bar">
             <span class="post-author">${escapeHtml(post.author_name)}</span>

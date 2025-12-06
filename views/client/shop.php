@@ -1,14 +1,19 @@
-<?php include 'views/layouts/header.php';
+<?php 
+require_once 'helpers/settings_helper.php';
+include 'views/layouts/header.php';
 $isLoggedIn = isset($_SESSION['user_id']);
 ?>
 
 <section class="shop-banner" style="background-image: url('assets/img/shop_banner.jpg');">
     <div class="shop-banner-content text-center">
-        <h1>Shop</h1>
+        <h1><?php echo htmlspecialchars(getSetting('shop.page_title', 'Shop')); ?></h1>
+        <?php if ($subtitle = getSetting('shop.page_subtitle')): ?>
+        <p class="text-white-50"><?php echo htmlspecialchars($subtitle); ?></p>
+        <?php endif; ?>
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb justify-content-center">
                 <li class="breadcrumb-item"><a href="index.php?page=home">Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Shop</li>
+                <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars(getSetting('shop.page_title', 'Shop')); ?></li>
             </ol>
         </nav>
     </div>
@@ -18,12 +23,12 @@ $isLoggedIn = isset($_SESSION['user_id']);
     <div class="container d-flex justify-content-between align-items-center">
         <div class="filter-left d-flex align-items-center gap-3">
             <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="offcanvas" data-bs-target="#filterSidebar">
-                <i class="bi bi-funnel"></i> Filter
+                <i class="bi bi-funnel"></i> <?php echo htmlspecialchars(getSetting('shop.filter_title', 'Filter')); ?>
             </button>
             <span class="text-muted small">Showing <?php echo count($products); ?> results</span>
         </div>
         <div class="filter-right d-flex align-items-center gap-3">
-            <span class="small">Sort by</span>
+            <span class="small"><?php echo htmlspecialchars(getSetting('shop.sort_label', 'Sort by')); ?></span>
             <form id="sortForm" action="index.php" method="GET">
                 <input type="hidden" name="page" value="shop">
 
@@ -74,7 +79,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
     <!-- Offcanvas Header -->
     <div class="offcanvas-header">
         <h5 class="offcanvas-title" id="filterSidebarLabel">
-            <i class="bi bi-funnel-fill text-primary"></i> Filter Products
+            <i class="bi bi-funnel-fill text-primary"></i> <?php echo htmlspecialchars(getSetting('shop.filter_title', 'Filter Products')); ?>
         </h5>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
@@ -281,7 +286,9 @@ $isLoggedIn = isset($_SESSION['user_id']);
                     </div>
                     <?php endforeach; ?>
             <?php else: ?>
-                <p>Chưa có sản phẩm nào.</p>
+                <div class="col-12 text-center py-5">
+                    <p class="text-muted"><?php echo htmlspecialchars(getSetting('shop.no_products_message', 'No products found.')); ?></p>
+                </div>
             <?php endif; ?>
 
         </div>

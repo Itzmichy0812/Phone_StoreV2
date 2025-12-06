@@ -114,17 +114,24 @@ switch ($page) {
     case 'manage_contacts':
     case 'manage_qna':
     case 'manage_info':
-    
-    if (!isset($_SESSION['is_admin']) || !$_SESSION['is_admin']) {
-            header("Location: index.php?page=home");
+    case 'manage_posts':
+        // Check if user is logged in and is admin
+        if (!isset($_SESSION['user_id'])) {
+            header("Location: index.php?page=login_signup");
             exit();
         }
-        include $adminFolder . $page . '.php';
-
-
-    
         
-    
+        // Verify user is admin
+        $stmt = $db->prepare("SELECT is_admin FROM users WHERE id = ?");
+        $stmt->execute([$_SESSION['user_id']]);
+        $user = $stmt->fetch();
+        
+        if (!$user || $user['is_admin'] != 1) {
+            die("<div class='alert alert-danger container mt-5'>Access denied. Admin only.</div>");
+        }
+        
+        include $adminFolder . $page . '.php';
+        break;
     
     // --- 404 ERROR ---
     default:

@@ -1,9 +1,15 @@
+<?php
+// Load settings helper
+if (!function_exists('getSetting')) {
+    require_once __DIR__ . '/../../helpers/settings_helper.php';
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PhoneStore - Contact</title>
+  <title><?php echo htmlspecialchars(getSetting('general.site_name', 'PhoneStore')); ?> - Contact</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 
@@ -41,10 +47,9 @@
       <div class="contact-container">
 
         <header class="contact-main-header text-center">
-          <h2>Get In Touch With Us</h2>
+          <h2><?php echo htmlspecialchars(getSetting('contact.page_title', 'Get In Touch With Us')); ?></h2>
           <p>
-            For more information about our products &amp; services, feel free to drop us an email.
-            Our staff will always be there to help you out. Don’t hesitate!
+            <?php echo htmlspecialchars(getSetting('contact.page_subtitle', 'For more information about our products & services, feel free to drop us an email. Our staff will always be there to help you out. Don\'t hesitate!')); ?>
           </p>
         </header>
 
@@ -59,8 +64,7 @@
               <div>
                 <h3 class="contact-info-title">Address</h3>
                 <p class="contact-info-text">
-                  236 5th SE Avenue, New York NY10000,<br />
-                  United States
+                  <?php echo nl2br(htmlspecialchars(getSetting('contact.address', '123 Street, City'))); ?>
                 </p>
               </div>
             </div>
@@ -72,8 +76,10 @@
               <div>
                 <h3 class="contact-info-title">Phone</h3>
                 <p class="contact-info-text mb-1">
-                  Mobile: + (84) 546-6789<br />
-                  Hotline: + (84) 456-6789
+                  <?php echo htmlspecialchars(getSetting('contact.phone', '+84 123 456 789')); ?>
+                </p>
+                <p class="contact-info-text mb-1">
+                  Email: <?php echo htmlspecialchars(getSetting('contact.email', 'info@phonestore.com')); ?>
                 </p>
               </div>
             </div>
@@ -85,8 +91,7 @@
               <div>
                 <h3 class="contact-info-title">Working Time</h3>
                 <p class="contact-info-text mb-1">
-                  Monday–Friday: 9:00 – 22:00<br />
-                  Saturday–Sunday: 9:00 – 21:00
+                  <?php echo nl2br(htmlspecialchars(getSetting('contact.working_hours', 'Mon-Fri: 9AM - 6PM'))); ?>
                 </p>
               </div>
             </div>

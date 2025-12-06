@@ -44,11 +44,11 @@ class PostModel {
             p.view_count,
             p.created_at,
             p.category_id,
-            a.full_name as author_name,
+            u.username as author_name,
             pc.name as category_name,
             pc.color as category_color
         FROM posts p
-        LEFT JOIN admins a ON p.admin_id = a.id
+        LEFT JOIN users u ON p.user_id = u.id
         LEFT JOIN post_categories pc ON p.category_id = pc.id
         WHERE p.id = ? AND p.status = 'published'";
         
@@ -80,11 +80,11 @@ class PostModel {
             p.image,
             p.view_count,
             p.created_at,
-            a.full_name as author_name,
+            u.username as author_name,
             pc.name as category_name,
             pc.color as category_color
         FROM posts p
-        LEFT JOIN admins a ON p.admin_id = a.id
+        LEFT JOIN users u ON p.user_id = u.id
         LEFT JOIN post_categories pc ON p.category_id = pc.id
         WHERE p.status = 'published'";
         
@@ -208,13 +208,13 @@ class PostModel {
      * @return int|false Post ID or false on failure
      */
     public function createPost($data) {
-        $query = "INSERT INTO posts (admin_id, category_id, title, content, image, status) 
+        $query = "INSERT INTO posts (user_id, category_id, title, content, image, status) 
                   VALUES (?, ?, ?, ?, ?, ?)";
         
         try {
             $stmt = $this->pdo->prepare($query);
             $stmt->execute([
-                $data['admin_id'],
+                $data['user_id'],
                 $data['category_id'] ?? null,
                 $data['title'],
                 $data['content'],
@@ -272,6 +272,150 @@ class PostModel {
             return $stmt->execute([$postId]);
         } catch (PDOException $e) {
             error_log("Error deleting post: " . $e->getMessage());
+            return false;
+        }
+    }
+    
+    /**
+     * Get all posts for admin (including drafts and archived)
+     * @param string $status Filter by status (optional)
+     * @return array
+     */
+    public function getAllPostsForAdmin($status = null) {
+        $query = "SELECT 
+            p.id,
+            p.title,
+            p.content,
+            p.image,
+            p.view_count,
+            p.status,
+            p.created_at,
+            p.updated_at,
+            u.username as author_name,
+            pc.name as category_name,
+            pc.color as category_color,
+            (SELECT COUNT(*) FROM post_reactions WHERE post_id = p.id) as reaction_count,
+            (SELECT COUNT(*) FROM post_comments WHERE post_id = p.id) as comment_count
+        FROM posts p
+        LEFT JOIN users u ON p.user_id = u.id
+        LEFT JOIN post_categories pc ON p.category_id = pc.id";
+        
+        if ($status) {
+            $query .= " WHERE p.status = ?";
+        }
+        
+        $query .= " ORDER BY p.created_at DESC";
+        
+        try {
+            $stmt = $this->pdo->prepare($query);
+            if ($status) {
+                $stmt->execute([$status]);
+            } else {
+                $stmt->execute();
+            }
+            return $stmt->fetchAll();
+        } catch (PDOException $e) {
+            error_log("Error getting posts for admin: " . $e->getMessage());
+            return [];
+        }
+    }
+    
+    /**
+     * Get post by ID for admin (any status)
+     * @param int $postId
+     * @return array|null
+     */
+    public function getPostByIdForAdmin($postId) {
+        $query = "SELECT 
+            p.*,
+            u.username as author_name,
+            pc.name as category_name
+        FROM posts p
+        LEFT JOIN users u ON p.user_id = u.id
+        LEFT JOIN post_categories pc ON p.category_id = pc.id
+        WHERE p.id = ?";
+        
+        try {
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute([$postId]);
+            return $stmt->fetch();
+        } catch (PDOException $e) {
+            error_log("Error getting post for admin: " . $e->getMessage());
+            return null;
+        }
+    }
+    
+    /**
+     * Get reactions for a post
+     * @param int $postId
+     * @return array
+     */
+    public function getPostReactions($postId) {
+        $query = "SELECT 
+            pr.*,
+            CASE 
+                WHEN pr.user_type = 'customer' THEN u.username
+                WHEN pr.user_type = 'admin' THEN a.username
+                ELSE pr.user_name
+            END as display_name
+        FROM post_reactions pr
+        LEFT JOIN users u ON pr.user_type = 'customer' AND pr.user_id = u.id
+        LEFT JOIN admins a ON pr.user_type = 'admin' AND pr.user_id = a.id
+        WHERE pr.post_id = ?
+        ORDER BY pr.created_at DESC";
+        
+        try {
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute([$postId]);
+            return $stmt->fetchAll();
+        } catch (PDOException $e) {
+            error_log("Error getting post reactions: " . $e->getMessage());
+            return [];
+        }
+    }
+    
+    /**
+     * Get comments for a post
+     * @param int $postId
+     * @return array
+     */
+    public function getPostComments($postId) {
+        $query = "SELECT 
+            pc.*,
+            CASE 
+                WHEN pc.user_type = 'customer' THEN u.username
+                WHEN pc.user_type = 'admin' THEN a.username
+                ELSE pc.user_name
+            END as display_name
+        FROM post_comments pc
+        LEFT JOIN users u ON pc.user_type = 'customer' AND pc.user_id = u.id
+        LEFT JOIN admins a ON pc.user_type = 'admin' AND pc.user_id = a.id
+        WHERE pc.post_id = ?
+        ORDER BY pc.created_at DESC";
+        
+        try {
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute([$postId]);
+            return $stmt->fetchAll();
+        } catch (PDOException $e) {
+            error_log("Error getting post comments: " . $e->getMessage());
+            return [];
+        }
+    }
+    
+    /**
+     * Delete comment
+     * @param int $commentId
+     * @return bool
+     */
+    public function deleteComment($commentId) {
+        $query = "DELETE FROM post_comments WHERE id = ?";
+        
+        try {
+            $stmt = $this->pdo->prepare($query);
+            return $stmt->execute([$commentId]);
+        } catch (PDOException $e) {
+            error_log("Error deleting comment: " . $e->getMessage());
             return false;
         }
     }

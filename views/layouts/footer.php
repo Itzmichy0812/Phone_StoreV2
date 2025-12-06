@@ -1,12 +1,17 @@
+<?php
+// Load settings helper
+if (!function_exists('getSetting')) {
+    require_once __DIR__ . '/../../helpers/settings_helper.php';
+}
+?>
 <section class="contact-footer-section">
   <div class="contact-container">
 
     <div class="contact-grid">
       <div>
-        <div class="contact-brand-name">PhoneStore.</div>
+        <div class="contact-brand-name"><?php echo htmlspecialchars(getSetting('general.site_name', 'PhoneStore')); ?>.</div>
         <p class="contact-address">
-          400 University Drive Suite 200 Coral Gables,<br>
-          FL 33134 USA
+          <?php echo nl2br(htmlspecialchars(getSetting('footer.about_text', 'Your trusted partner for quality phones.'))); ?>
         </p>
       </div>
 
@@ -33,23 +38,23 @@
       </div>
 
       <div>
-        <div class="contact-column-title">Newsletter</div>
-        <form action="#" method="post" class="newsletter-form" onsubmit="return false;">
-          <div class="newsletter-input-wrap">
-            <input
-              type="email"
-              class="newsletter-input"
-              placeholder="Enter Your Email Address"
-              required
-            />
-            <button class="newsletter-btn" type="submit">SUBSCRIBE</button>
-          </div>
-        </form>
+        <div class="contact-column-title">Follow Us</div>
+        <ul class="contact-link-list">
+          <?php if ($fbLink = getSetting('footer.social_facebook')): ?>
+          <li><a class="contact-link" href="<?php echo htmlspecialchars($fbLink); ?>" target="_blank">Facebook</a></li>
+          <?php endif; ?>
+          <?php if ($igLink = getSetting('footer.social_instagram')): ?>
+          <li><a class="contact-link" href="<?php echo htmlspecialchars($igLink); ?>" target="_blank">Instagram</a></li>
+          <?php endif; ?>
+          <?php if ($twLink = getSetting('footer.social_twitter')): ?>
+          <li><a class="contact-link" href="<?php echo htmlspecialchars($twLink); ?>" target="_blank">Twitter</a></li>
+          <?php endif; ?>
+        </ul>
       </div>
     </div>
 
     <div class="contact-bottom-line">
-      2025 PhoneStore. All rights reserved
+      <?php echo date('Y'); ?> <?php echo htmlspecialchars(getSetting('general.site_name', 'PhoneStore')); ?>. All rights reserved
     </div>
 
   </div>
@@ -61,5 +66,6 @@
 <script src="assets/javascript/header.js"></script>
 <script src="assets/javascript/product_detail.js"></script>
 <script src="assets/javascript/cart.js"></script>
+
 
 
