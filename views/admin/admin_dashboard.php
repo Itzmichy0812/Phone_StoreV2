@@ -9,7 +9,13 @@
 </head>
 <body>
 
-<?php include 'views/layouts/header.php'; ?>
+<?php include 'views/layouts/header.php'; 
+
+if (!isset($_SESSION['is_admin']) || !$_SESSION['is_admin']) {
+    header("Location: index.php?page=home");
+    exit();
+}
+?>
 
 <main class="admin-page">
   <div class="admin-container">
@@ -40,6 +46,16 @@
         <p>Change page contents like background image, text...</p>
       </a>
 
+      <a href="index.php?page=admin_reviews" class="admin-card">
+        <h2>Manage Reviews</h2>
+        <p>Manage customers' reviews</p>
+      </a>
+
+      <a href="index.php?page=manage_orders" class="admin-card">
+        <h2>Manage Orders</h2>
+        <p>Manage customers' orders</p>
+      </a>
+      
       <!-- NEW: Manage users -->
       <a href="index.php?page=manage_profile" class="admin-card">
         <h2>Manage users</h2>

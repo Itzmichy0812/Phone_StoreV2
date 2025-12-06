@@ -51,26 +51,49 @@ class ProductDetailPage {
         const increaseBtn = document.getElementById('increaseQty');
         const decreaseBtn = document.getElementById('decreaseQty');
         const quantityInput = document.getElementById('productQuantity');
-        
+
         if (!quantityInput) return;
+
+    // ✅ Remove old listeners nếu có (bằng cách clone node)
+        if (increaseBtn) {
+            const newIncreaseBtn = increaseBtn.cloneNode(true);
+            increaseBtn.parentNode.replaceChild(newIncreaseBtn, increaseBtn);
         
-        increaseBtn?.addEventListener('click', () => {
-            const max = parseInt(quantityInput.max) || 999;
-            const current = parseInt(quantityInput.value) || 1;
+            newIncreaseBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const max = parseInt(quantityInput.max) || 999;
+                const current = parseInt(quantityInput.value) || 1;
             
             if (current < max) {
-                quantityInput.value = current + 1;
+                quantityInput.value = current + 1; // ✅ Tăng 1
             }
         });
+    }
+
+    if (decreaseBtn) {
+        const newDecreaseBtn = decreaseBtn.cloneNode(true);
+        decreaseBtn.parentNode.replaceChild(newDecreaseBtn, decreaseBtn);
         
-        decreaseBtn?.addEventListener('click', () => {
+        newDecreaseBtn.addEventListener('click', (e) => {
+            e.preventDefault();
             const min = parseInt(quantityInput.min) || 1;
             const current = parseInt(quantityInput.value) || 1;
             
             if (current > min) {
-                quantityInput.value = current - 1;
+                quantityInput.value = current - 1; // ✅ Giảm 1
             }
         });
+    }
+
+    // ✅ Prevent manual input outside min-max
+    quantityInput?.addEventListener('input', () => {
+        const min = parseInt(quantityInput.min) || 1;
+        const max = parseInt(quantityInput.max) || 999;
+        let value = parseInt(quantityInput.value) || min;
+
+        if (value < min) quantityInput.value = min;
+        if (value > max) quantityInput.value = max;
+    });
     }
     
     /**

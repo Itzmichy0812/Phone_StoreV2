@@ -168,6 +168,41 @@ class OrderModel {
             ':status' => $status,
             ':id' => $orderId
         ]);
+ 
+ 
     }
+
+    public function getAllOrdersAdmin($status = 'all') {
+    try {
+        // Query đơn giản - không join vì không có user_id
+        $sql = "SELECT * FROM orders";
+        
+        if ($status !== 'all') {
+            $sql .= " WHERE status = :status";
+        }
+        
+        $sql .= " ORDER BY created_at DESC";
+        
+        $stmt = $this->db->prepare($sql);
+        
+        if ($status !== 'all') {
+            $stmt->bindParam(':status', $status, PDO::PARAM_STR);
+        }
+        
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        // Debug log
+        error_log("Orders query - Status: $status, Count: " . count($result));
+        
+        return $result;
+        
+    } catch (PDOException $e) {
+        error_log("Get all orders error: " . $e->getMessage());
+        return [];
+    }
+    }
+    
+    
 }
 ?>

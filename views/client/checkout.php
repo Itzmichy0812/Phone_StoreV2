@@ -149,8 +149,8 @@ include 'views/layouts/header.php';
                 
                 <!-- Right Column - Order Summary -->
                 <div class="col-lg-5">
-                    <div class="card shadow-sm sticky-top" style="top: 100px;">
-                        <div class="card-header bg-light">
+                    <div class="card shadow-sm sticky-top" style="position: sticky; top: 100px; z-index: 500; max-height: calc(100vh - 120px); overflow-y: auto;">
+                        <div class="card-header bg-white">
                             <h5 class="mb-0"><i class="bi bi-basket-fill"></i> Order Summary</h5>
                         </div>
                         <div class="card-body">

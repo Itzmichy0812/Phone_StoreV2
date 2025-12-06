@@ -1,5 +1,6 @@
 <?php
 session_start();
+
 require_once 'config/db.php';
 $database = new Database();
 $db = $database->connect();
@@ -116,6 +117,8 @@ switch ($page) {
     case 'admin_dashboard':
         include 'views/admin/admin_dashboard.php';
         break;
+    case 'admin_reviews':
+    case 'manage_orders':
     case 'manage_about_info': 
         include 'views/admin/manage_about_info.php';
         break;   
@@ -150,6 +153,24 @@ switch ($page) {
         include $adminFolder . $page . '.php';
         break;
     
+    if (!isset($_SESSION['is_admin']) || !$_SESSION['is_admin']) {
+            header("Location: index.php?page=home");
+            exit();
+        }
+        include $adminFolder . $page . '.php';
+    case 'order_details':
+         if (!isset($_SESSION['is_admin']) || !$_SESSION['is_admin']) {
+            header("Location: index.php?page=home");
+            exit();
+        }
+
+    if ($page == 'admin_reviews') {
+        include 'controllers/admin/ReviewController.php';
+    } else {
+        include $adminFolder . $page . '.php';
+    }
+    break;
+
     // --- 404 ERROR ---
     default:
         echo "<h1>404 - Page Not Found</h1>";

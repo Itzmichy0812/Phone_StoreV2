@@ -184,8 +184,8 @@ foreach ($cartItems as $productId => $item) {
                 
                 <!-- Cart Totals (Right Column) -->
                 <div class="col-lg-4">
-                    <div class="card shadow-sm sticky-top" style="top: 100px;">
-                        <div class="card-header bg-light">
+                    <div class="card shadow-sm sticky-top" style="position: sticky; top: 100px; z-index: 500; max-height: calc(100vh - 120px); overflow-y: auto;">
+                        <div class="card-header bg-white">
                             <h5 class="mb-0">Cart Totals</h5>
                         </div>
                         <div class="card-body">
@@ -255,124 +255,114 @@ foreach ($cartItems as $productId => $item) {
 
 <!-- Cart Page JavaScript -->
 <script>
-// Update quantity buttons
-document.querySelectorAll('.btn-increase, .btn-decrease').forEach(btn => {
-    btn.addEventListener('click', function() {
-        const productId = this.dataset.productId;
-        const row = document.querySelector(`tr[data-product-id="${productId}"]`);
-        const quantityInput = row.querySelector('.quantity-input');
-        let currentQty = parseInt(quantityInput.value);
+/**
+ * Cart Page - Quantity & Remove Item Handlers
+ * Sử dụng event delegation để tránh duplicate listeners
+ */
+
+// ✅ Event Delegation: Dùng 1 listener cho toàn bộ document
+document.addEventListener('click', function(e) {
+    const target = e.target;
+    
+    // ✅ Handle qty-plus button (hoặc icon bên trong)
+    const plusBtn = target.closest('.qty-plus');
+    if (plusBtn) {
+        e.preventDefault();
+        const productId = plusBtn.getAttribute('data-product-id');
+        const input = document.querySelector(`.qty-value[data-product-id="${productId}"]`);
         
-        if (this.classList.contains('btn-increase')) {
-            const maxStock = parseInt(this.dataset.maxStock);
-            if (currentQty < maxStock) {
-                currentQty++;
-            } else {
-                alert('Maximum stock reached!');
-                return;
-            }
-        } else if (this.classList.contains('btn-decrease')) {
-            if (currentQty > 1) {
-                currentQty--;
-            } else {
-                return;
+        if (input) {
+            let quantity = parseInt(input.value) || 1;
+            quantity++; // Tăng 1
+            input.value = quantity;
+            updateCartQuantity(productId, quantity);
+        }
+        return;
+    }
+    
+    // ✅ Handle qty-minus button
+    const minusBtn = target.closest('.qty-minus');
+    if (minusBtn) {
+        e.preventDefault();
+        const productId = minusBtn.getAttribute('data-product-id');
+        const input = document.querySelector(`.qty-value[data-product-id="${productId}"]`);
+        
+        if (input) {
+            let quantity = parseInt(input.value) || 1;
+            if (quantity > 1) {
+                quantity--; // Giảm 1
+                input.value = quantity;
+                updateCartQuantity(productId, quantity);
             }
         }
-        
-        quantityInput.value = currentQty;
-        updateCartQuantity(productId, currentQty);
-    });
-});
-
-// Remove item
-document.querySelectorAll('.btn-remove').forEach(btn => {
-    btn.addEventListener('click', function() {
-        if (confirm('Remove this item from cart?')) {
-            const productId = this.dataset.productId;
+        return;
+    }
+    
+    // ✅ Handle remove button
+    const removeBtn = target.closest('.btn-remove-item');
+    if (removeBtn) {
+        e.preventDefault();
+        const productId = removeBtn.getAttribute('data-product-id');
+        if (confirm('Remove this product from cart?')) {
             removeCartItem(productId);
         }
-    });
-});
-
-// Clear cart
-document.getElementById('clearCartBtn')?.addEventListener('click', function() {
-    if (confirm('Clear all items from cart?')) {
-        clearCart();
+        return;
     }
 });
 
-// Apply coupon
-document.getElementById('applyCouponBtn')?.addEventListener('click', function() {
-    const couponCode = document.getElementById('couponInput').value.trim();
-    if (couponCode) {
-        alert('Coupon feature coming soon!\nCode: ' + couponCode);
-    } else {
-        alert('Please enter a coupon code');
-    }
-});
-
+/**
+ * Update cart quantity via AJAX
+ */
 async function updateCartQuantity(productId, quantity) {
+    const formData = new FormData();
+    formData.append('action', 'update');
+    formData.append('productid', productId);
+    formData.append('quantity', quantity);
+
     try {
-        const formData = new FormData();
-        formData.append('action', 'update');
-        formData.append('product_id', productId);
-        formData.append('quantity', quantity);
-        
         const response = await fetch('ajax/cart_handler.php', {
             method: 'POST',
             body: formData
         });
-        
+
         const data = await response.json();
-        
+
+        if (data.success) {
+            // ✅ Reload page để update totals
+            location.reload();
+        } else {
+            alert('Failed to update cart: ' + (data.message || 'Unknown error'));
+        }
+    } catch (error) {
+        console.error('Error updating cart:', error);
+        alert('Network error. Please try again.');
+    }
+}
+
+/**
+ * Remove cart item via AJAX
+ */
+async function removeCartItem(productId) {
+    const formData = new FormData();
+    formData.append('action', 'remove');
+    formData.append('productid', productId);
+
+    try {
+        const response = await fetch('ajax/cart_handler.php', {
+            method: 'POST',
+            body: formData
+        });
+
+        const data = await response.json();
+
         if (data.success) {
             location.reload();
         } else {
-            alert('Failed to update cart');
+            alert('Failed to remove item: ' + (data.message || 'Unknown error'));
         }
     } catch (error) {
-        console.error('Error:', error);
-    }
-}
-
-async function removeCartItem(productId) {
-    try {
-        const formData = new FormData();
-        formData.append('action', 'remove');
-        formData.append('product_id', productId);
-        
-        const response = await fetch('ajax/cart_handler.php', {
-            method: 'POST',
-            body: formData
-        });
-        
-        const data = await response.json();
-        
-        if (data.success) {
-            location.reload();
-        }
-    } catch (error) {
-        console.error('Error:', error);
-    }
-}
-
-async function clearCart() {
-    try {
-        const formData = new FormData();
-        formData.append('action', 'clear');
-        
-        const response = await fetch('ajax/cart_handler.php', {
-            method: 'POST',
-            body: formData
-        });
-        
-        const data = await response.json();
-        
-        if (data.success) {
-            location.reload();
-        }
-    } catch (error) {
-        console.error('Error:', error);
+        console.error('Error removing item:', error);
+        alert('Network error. Please try again.');
     }
 }
 </script>
