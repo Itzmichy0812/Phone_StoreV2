@@ -2289,7 +2289,7 @@ html {
 }
 
 body {
-    padding-top: 80px; /* Adjust based on your header height */
+    padding-top: 120px; /* Adjust based on your header height */
 }
 
 /* Page hero section - ensure proper spacing */
@@ -3210,5 +3210,100 @@ form.d-none {
 
 body {
     /* Thay 80px bằng chiều cao thực tế header của bạn */
-    padding-top: 80px; 
+    padding-top: 110px; 
+}
+
+/* ============================================
+   Z-INDEX FIX - Cart & Checkout Pages
+   ============================================ */
+
+/* ✅ Z-index hierarchy (cao nhất → thấp nhất) */
+/* 
+   10000: Modals, overlays
+   9999:  Mini cart dropdown
+   1000:  Header (sticky/fixed)
+   500:   Sidebar cart totals (sticky)
+   1:     Normal content
+*/
+
+
+
+/* ✅ 2. Mini Cart Dropdown - Ở trên header */
+#cartDropdown,
+.cart-dropdown {
+    position: absolute !important;
+    z-index: 9999 !important; /* Cao hơn header */
+}
+
+/* ✅ 3. Cart Totals Sidebar - Sticky nhưng thấp hơn dropdown */
+.cart-totals-sidebar,
+.order-summary-sidebar,
+.card.shadow-sm {
+    position: sticky !important;
+    top: 100px !important; /* Cách header 100px */
+    z-index: 500 !important; /* Thấp hơn dropdown */
+    max-height: calc(100vh - 120px) !important;
+    overflow-y: auto !important;
+}
+
+/* ✅ 4. Cart Page - Sidebar bên phải */
+.cart-container .col-lg-4 .card {
+    position: sticky !important;
+    top: 100px !important;
+    z-index: 500 !important;
+}
+
+/* ✅ 5. Checkout Page - Order Summary */
+.checkout-container .order-summary-card {
+    position: sticky !important;
+    top: 100px !important;
+    z-index: 500 !important;
+}
+
+/* ✅ 6. Đảm bảo dropdown không bị overflow hidden */
+body {
+    overflow-x: hidden !important; /* Chỉ ẩn horizontal scroll */
+    overflow-y: auto !important; /* Cho phép vertical scroll */
+}
+
+/* ✅ 7. Container không che dropdown */
+.container,
+.cart-container,
+.checkout-container {
+    overflow: visible !important;
+    position: relative;
+    z-index: 1;
+}
+
+/* ✅ 8. Fix mini cart position - Luôn xuất hiện dưới icon */
+#cartDropdown {
+    position: absolute !important;
+    top: 100% !important; /* Xuất hiện ngay dưới cart icon */
+    right: 0 !important;
+    margin-top: 10px !important;
+}
+
+/* ✅ 9. Mobile responsive - Tắt sticky trên mobile */
+@media (max-width: 768px) {
+    .cart-totals-sidebar,
+    .order-summary-sidebar,
+    .card.shadow-sm {
+        position: relative !important;
+        top: auto !important;
+        max-height: none !important;
+    }
+}
+
+/* ✅ 10. Smooth scroll behavior */
+html {
+    scroll-behavior: smooth;
+}
+
+/* ✅ 11. Prevent sidebar từ che dropdown */
+.col-lg-4 {
+    z-index: 500 !important;
+}
+
+.col-lg-8 {
+    z-index: 1 !important;
 }

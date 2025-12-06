@@ -1,8 +1,11 @@
 <?php 
 // File: views/client/product_detail.php
 include 'views/layouts/header.php'; 
+function numberToWords($num) {
+    $words = ['', 'one', 'two', 'three', 'four', 'five'];
+    return $words[$num] ?? '';
+}
 ?>
-
 <!-- ============================================
      BREADCRUMB SECTION
      ============================================ -->
@@ -83,13 +86,12 @@ include 'views/layouts/header.php';
                         <small class="text-muted">Base price: <?= number_format($product['price'], 0, ',', '.') ?>đ</small>
                     </div>
                     
-                    <!-- Rating & Reviews -->
+                    <!-- ✅ Rating & Reviews - ĐÃ SỬA -->
                     <div class="product-rating mb-4 d-flex align-items-center gap-3 border-top border-bottom py-3">
                         <div class="stars-display text-warning fs-5">
                             <?php
-                            $rating = $product['average_rating'] ?? 0;
-                            $fullStars = floor($rating);
-                            $halfStar = ($rating - $fullStars) >= 0.5 ? 1 : 0;
+                            $fullStars = floor($averageRating);
+                            $halfStar = ($averageRating - $fullStars) >= 0.5 ? 1 : 0;
                             $emptyStars = 5 - $fullStars - $halfStar;
                             
                             for ($i = 0; $i < $fullStars; $i++) {
@@ -104,8 +106,8 @@ include 'views/layouts/header.php';
                             ?>
                         </div>
                         <div class="rating-text">
-                            <strong><?= number_format($rating, 1) ?></strong>
-                            <span class="text-muted">(<?= $product['review_count'] ?> reviews)</span>
+                            <strong><?= number_format($averageRating, 1) ?></strong>
+                            <span class="text-muted">(<?= $reviewCount ?> reviews)</span>
                         </div>
                     </div>
                     
@@ -334,7 +336,7 @@ include 'views/layouts/header.php';
                         data-bs-toggle="tab" 
                         data-bs-target="#reviews" 
                         type="button">
-                    <i class="bi bi-chat-left-text"></i> Reviews (<?= $product['review_count'] ?>)
+                    <i class="bi bi-chat-left-text"></i> Reviews (<?= $reviewCount ?>)
                 </button>
             </li>
         </ul>
@@ -417,8 +419,15 @@ include 'views/layouts/header.php';
                         <tr>
                             <th class="bg-light">Average Rating</th>
                             <td>
-                                <strong><?= number_format($product['average_rating'], 1) ?>/5.0</strong>
-                                (based on <?= $product['review_count'] ?> reviews)
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="rating-stars">
+                                        <?php for ($i = 1; $i <= 5; $i++): ?>
+                                        <i class="bi bi-star<?= $i <= round($averageRating) ? '-fill' : '' ?> text-warning"></i>
+                                        <?php endfor; ?>
+                                    </div>
+                                    <strong><?= number_format($averageRating, 1) ?>/5.0</strong>
+                                    <span class="text-muted">(<?= $reviewCount ?> reviews)</span>
+                                </div>
                             </td>
                         </tr>
                     </tbody>
@@ -427,33 +436,180 @@ include 'views/layouts/header.php';
             
             <!-- ========== REVIEWS TAB (PLACEHOLDER) ========== -->
             <div class="tab-pane fade" id="reviews" role="tabpanel">
-                <h5 class="mb-4 fw-bold">Customer Reviews</h5>
-                
-                <!-- Placeholder Message -->
-                <div class="alert alert-info text-center">
-                    <i class="bi bi-info-circle fs-3"></i>
-                    <p class="mb-0 mt-2">
-                        <strong>Reviews feature coming soon!</strong><br>
-                        Login feature is being developed by team member.
-                    </p>
-                </div>
-                
-                <!-- Average Rating Display -->
-                <div class="text-center py-4 border rounded bg-light">
-                    <h2 class="mb-2"><?= number_format($product['average_rating'], 1) ?> / 5.0</h2>
-                    <div class="stars-display text-warning fs-4 mb-2">
-                        <?php
-                        $rating = $product['average_rating'];
-                        $fullStars = floor($rating);
-                        $halfStar = ($rating - $fullStars) >= 0.5 ? 1 : 0;
-                        $emptyStars = 5 - $fullStars - $halfStar;
+                <div class="row">
+                    <!-- Left: Stats & Form -->
+                    <div class="col-lg-4 mb-4">
+                        <!-- Review Stats -->
+                        <div class="card shadow-sm mb-3">
+                            <div class="card-body text-center">
+                                <h2 class="display-4 fw-bold text-warning mb-2"><?= number_format($averageRating, 1) ?></h2>
+                                <div class="stars-display text-warning fs-4 mb-2">
+                                    <?php
+                                    $fullStars = floor($averageRating);
+                                    $halfStar = ($averageRating - $fullStars) >= 0.5 ? 1 : 0;
+                                    $emptyStars = 5 - $fullStars - $halfStar;
+                                    
+                                    for ($i = 0; $i < $fullStars; $i++) echo '<i class="bi bi-star-fill"></i>';
+                                    if ($halfStar) echo '<i class="bi bi-star-half"></i>';
+                                    for ($i = 0; $i < $emptyStars; $i++) echo '<i class="bi bi-star"></i>';
+                                    ?>
+                                </div>
+                                <p class="text-muted mb-0"><?= $reviewCount ?> reviews</p>
+                            </div>
+                        </div>
                         
-                        for ($i = 0; $i < $fullStars; $i++) echo '<i class="bi bi-star-fill"></i>';
-                        if ($halfStar) echo '<i class="bi bi-star-half"></i>';
-                        for ($i = 0; $i < $emptyStars; $i++) echo '<i class="bi bi-star"></i>';
-                        ?>
+                        <!-- Rating Breakdown -->
+                        <?php if ($reviewStats && $reviewStats['total_reviews'] > 0): ?>
+                        <div class="card shadow-sm mb-3">
+                            <div class="card-body">
+                                <?php 
+                                $starLabels = ['five_star' => 5, 'four_star' => 4, 'three_star' => 3, 'two_star' => 2, 'one_star' => 1];
+                                foreach ($starLabels as $key => $starNum): 
+                                    $starCount = $reviewStats[$key];
+                                    $percentage = ($starCount / $reviewStats['total_reviews']) * 100;
+                                ?>
+                                <div class="d-flex align-items-center mb-2">
+                                    <span style="width: 50px; font-size: 13px;"><?= $starNum ?> ★</span>
+                                    <div class="progress flex-grow-1 mx-2" style="height: 6px;">
+                                        <div class="progress-bar bg-warning" style="width: <?= $percentage ?>%"></div>
+                                    </div>
+                                    <span class="text-muted" style="width: 30px; font-size: 13px;"><?= $starCount ?></span>
+                                </div>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                        <?php endif; ?>
+                        
+                        <!-- Review Form -->
+                        <?php if (isset($_SESSION['user_id'])): ?>
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <h6 class="mb-3">Write Your Review</h6>
+                                <form id="reviewForm" enctype="multipart/form-data">
+                                    <input type="hidden" name="product_id" value="<?= $product['id'] ?>">
+                                    
+                                    <!-- Rating -->
+                                    <div class="mb-3">
+                                        <label class="form-label small">Rating <span class="text-danger">*</span></label>
+                                        <div class="rating-input d-flex gap-1 fs-4">
+                                            <?php for ($i = 1; $i <= 5; $i++): ?>
+                                            <i class="bi bi-star text-muted rating-star" data-rating="<?= $i ?>" style="cursor: pointer;"></i>
+                                            <?php endfor; ?>
+                                        </div>
+                                        <input type="hidden" name="rating" id="ratingValue" required>
+                                        <div class="invalid-feedback d-block" id="ratingError" style="display: none;"></div>
+                                    </div>
+                                    
+                                    <!-- Title -->
+                                    <div class="mb-3">
+                                        <label class="form-label small">Title</label>
+                                        <input type="text" class="form-control form-control-sm" name="review_title" maxlength="255">
+                                    </div>
+                                    
+                                    <!-- Review Text -->
+                                    <div class="mb-3">
+                                        <label class="form-label small">Review <span class="text-danger">*</span></label>
+                                        <textarea class="form-control form-control-sm" name="review_text" rows="4" required></textarea>
+                                    </div>
+                                    
+                                    <!-- Images -->
+                                    <div class="mb-3">
+                                        <label class="form-label small">Images (Max 5)</label>
+                                        <div id="imageDropzone" class="border border-dashed rounded p-3 text-center bg-light" style="cursor: pointer;">
+                                            <i class="bi bi-cloud-upload fs-3 text-muted"></i>
+                                            <p class="mb-0 small">Drop images or click</p>
+                                        </div>
+                                        <input type="file" id="reviewImagesInput" name="review_images[]" accept="image/*" multiple style="display: none;">
+                                        <div id="imagePreview" class="mt-2"></div>
+                                    </div>
+                                    
+                                    <div id="reviewAlert" style="display: none;"></div>
+                                    <button type="submit" class="btn btn-primary btn-sm w-100" id="submitReviewBtn">Submit Review</button>
+                                </form>
+                            </div>
+                        </div>
+                        <?php else: ?>
+                        <div class="alert alert-info small">
+                            <a href="index.php?page=login_signup">Login</a> to write a review
+                        </div>
+                        <?php endif; ?>
                     </div>
-                    <p class="text-muted mb-0">Based on <?= $product['review_count'] ?> reviews</p>
+                    
+                    <!-- Right: Reviews List -->
+                    <div class="col-lg-8">
+                        <?php
+                        echo "<!-- DEBUG from View -->";
+                        echo "<!-- isset(\$reviews): " . (isset($reviews) ? 'YES' : 'NO') . " -->";
+                        echo "<!-- count(\$reviews): " . (isset($reviews) ? count($reviews) : '0') . " -->";
+                        if (isset($reviews) && !empty($reviews)) {
+                        echo "<!-- First Review Keys: " . implode(', ', array_keys($reviews[0])) . " -->";
+                        }
+                        ?>
+                        <?php if (count($reviews) > 0): ?>
+                            <?php foreach ($reviews as $review): ?>
+                            <div class="card shadow-sm mb-3">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <div class="d-flex gap-2">
+                                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                                <?= strtoupper(mb_substr($review['user_name'], 0, 1)) ?>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0">
+                                                    <?= htmlspecialchars($review['user_name']) ?>
+                                                    <?php if ($review['is_verified_purchase']): ?>
+                                                    <span class="badge bg-success" style="font-size: 10px;">✓ Verified</span>
+                                                    <?php endif; ?>
+                                                </h6>
+                                                <small class="text-muted"><?= date('d/m/Y', strtotime($review['created_at'])) ?></small>
+                                            </div>
+                                        </div>
+                                        <div class="text-warning">
+                                            <?php for ($i = 1; $i <= 5; $i++): ?>
+                                            <i class="bi bi-star<?= $i <= $review['rating'] ? '-fill' : '' ?>"></i>
+                                            <?php endfor; ?>
+                                        </div>
+                                    </div>
+                                    
+                                    <?php if (!empty($review['review_title'])): ?>
+                                    <h6><?= htmlspecialchars($review['review_title']) ?></h6>
+                                    <?php endif; ?>
+                                    
+                                    <p class="mb-2">
+                                        <?= nl2br(htmlspecialchars($review['review_text'] ?? '')) ?>
+                                    </p>
+                                    
+                                    <?php 
+                                    $reviewImages = json_decode($review['review_images'], true);
+                                    if (!empty($reviewImages) && is_array($reviewImages)): 
+                                    ?>
+                                    <div class="d-flex gap-2 mb-2">
+                                        <?php foreach ($reviewImages as $image): ?>
+                                        <img src="assets/img/reviews/<?= htmlspecialchars($image) ?>" 
+                                             class="img-thumbnail" 
+                                             style="width: 80px; height: 80px; object-fit: cover; cursor: pointer;"
+                                             onclick="openImageModal('assets/img/reviews/<?= htmlspecialchars($image) ?>')">
+                                        <?php endforeach; ?>
+                                    </div>
+                                    <?php endif; ?>
+                                    
+                                    <?php if (!empty($review['admin_reply'])): ?>
+                                    <div class="bg-light p-2 rounded mt-2 border-start border-3 border-primary">
+                                        <strong class="text-primary small">Shop Reply:</strong>
+                                        <p class="mb-0 small"><?= nl2br(htmlspecialchars($review['admin_reply'])) ?></p>
+                                        <small class="text-muted"><?= date('d/m/Y', strtotime($review['admin_reply_at'])) ?></small>
+                                    </div>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                        <div class="text-center py-5">
+                            <i class="bi bi-chat-dots text-muted" style="font-size: 3rem;"></i>
+                            <p class="mt-3 text-muted">No reviews yet. Be the first!</p>
+                        </div>
+                        <?php endif; ?>
+                    </div>
                 </div>
             </div>
             
@@ -510,9 +666,17 @@ include 'views/layouts/header.php';
 </section>
 <?php endif; ?>
 
-<!-- ============================================
-     JAVASCRIPT FOR PRODUCT PAGE
-     ============================================ -->
+<div class="modal fade" id="imageModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-body p-0">
+                <button type="button" class="btn-close position-absolute top-0 end-0 m-3 bg-white" data-bs-dismiss="modal" style="z-index: 10;"></button>
+                <img src="" id="modalImage" class="img-fluid w-100">
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
 // Base price từ PHP
 const basePrice = <?= $product['price'] ?>;
@@ -520,15 +684,8 @@ let currentPriceModifier = 0;
 
 // ========== CHANGE MAIN IMAGE ON THUMBNAIL CLICK ==========
 function changeMainImage(imageUrl, thumbnailElement) {
-    // Update main image
     document.getElementById('mainProductImage').src = imageUrl;
-    
-    // Remove active class from all thumbnails
-    document.querySelectorAll('.thumbnail-item img').forEach(img => {
-        img.classList.remove('active');
-    });
-    
-    // Add active class to clicked thumbnail
+    document.querySelectorAll('.thumbnail-item img').forEach(img => img.classList.remove('active'));
     thumbnailElement.classList.add('active');
 }
 
@@ -537,19 +694,13 @@ document.getElementById('increaseQty').addEventListener('click', function() {
     const input = document.getElementById('productQuantity');
     const max = parseInt(input.max);
     const current = parseInt(input.value);
-    
-    if (current < max) {
-        input.value = current + 1;
-    }
+    if (current < max) input.value = current + 1;
 });
 
 document.getElementById('decreaseQty').addEventListener('click', function() {
     const input = document.getElementById('productQuantity');
     const current = parseInt(input.value);
-    
-    if (current > 1) {
-        input.value = current - 1;
-    }
+    if (current > 1) input.value = current - 1;
 });
 
 // ========== UPDATE PRICE WHEN STORAGE VARIANT CHANGES ==========
@@ -559,8 +710,6 @@ document.querySelectorAll('.variant-radio[name="storage"]').forEach(radio => {
             const priceModifier = parseFloat(this.dataset.priceModifier) || 0;
             currentPriceModifier = priceModifier;
             updateDisplayPrice();
-            
-            // Update stock display
             const stock = this.dataset.stock;
             document.getElementById('stockDisplay').textContent = stock;
             document.getElementById('productQuantity').max = stock;
@@ -581,38 +730,28 @@ document.querySelectorAll('.color-radio').forEach(radio => {
 // ========== UPDATE PRICE DISPLAY ==========
 function updateDisplayPrice() {
     const finalPrice = basePrice + currentPriceModifier;
-    document.getElementById('displayPrice').textContent = 
-        finalPrice.toLocaleString('vi-VN') + 'đ';
+    document.getElementById('displayPrice').textContent = finalPrice.toLocaleString('vi-VN') + 'đ';
 }
 
 // ========== COLOR SWATCH ACTIVE STATE ==========
 document.querySelectorAll('.color-swatch').forEach(swatch => {
     swatch.addEventListener('click', function() {
-        document.querySelectorAll('.color-swatch').forEach(s => {
-            s.classList.remove('active-color');
-        });
+        document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active-color'));
         this.classList.add('active-color');
     });
 });
 
 // ========== ADD TO CART WITH VARIANTS & QUANTITY ==========
-document.querySelector('.add-to-cart-btn').addEventListener('click', function() {
+document.querySelector('.add-to-cart-btn')?.addEventListener('click', function() {
     const productId = this.getAttribute('data-product-id');
     const quantity = document.getElementById('productQuantity').value;
-    
-    // Get selected storage (if exists)
     const selectedStorage = document.querySelector('.variant-radio[name="storage"]:checked');
     const storageId = selectedStorage ? selectedStorage.value : null;
-    
-    // Get selected color (if exists)
     const selectedColor = document.querySelector('.color-radio:checked');
     const colorId = selectedColor ? selectedColor.value : null;
-    
-    // Get selected RAM (if exists)
     const selectedRam = document.querySelector('.variant-radio[name="ram"]:checked');
     const ramId = selectedRam ? selectedRam.value : null;
     
-    // Call cart.js addToCart method
     if (typeof cart !== 'undefined') {
         cart.addToCart(productId, quantity, {
             storage_id: storageId,
@@ -623,8 +762,208 @@ document.querySelector('.add-to-cart-btn').addEventListener('click', function() 
         console.error('Cart object not found. Make sure cart.js is loaded.');
     }
 });
-</script>
 
+// ========== REVIEW SYSTEM ==========
+const ratingStars = document.querySelectorAll('.rating-star');
+const ratingValue = document.getElementById('ratingValue');
+const ratingError = document.getElementById('ratingError');
+
+if (ratingStars.length > 0) {
+    ratingStars.forEach(star => {
+        star.addEventListener('mouseenter', function() {
+            highlightStars(parseInt(this.dataset.rating));
+        });
+        star.addEventListener('click', function() {
+            const rating = parseInt(this.dataset.rating);
+            ratingValue.value = rating;
+            if (ratingError) ratingError.style.display = 'none';
+        });
+    });
+    
+    document.querySelector('.rating-input')?.addEventListener('mouseleave', function() {
+        highlightStars(parseInt(ratingValue.value) || 0);
+    });
+}
+
+function highlightStars(rating) {
+    ratingStars.forEach(star => {
+        const starRating = parseInt(star.dataset.rating);
+        star.classList.remove('bi-star', 'bi-star-fill', 'text-muted', 'text-warning');
+        if (starRating <= rating) {
+            star.classList.add('bi-star-fill', 'text-warning');
+        } else {
+            star.classList.add('bi-star', 'text-muted');
+        }
+    });
+}
+
+// ========== IMAGE UPLOAD - ĐÃ SỬA ==========
+const dropzone = document.getElementById('imageDropzone');
+const fileInput = document.getElementById('reviewImagesInput');
+const imagePreview = document.getElementById('imagePreview');
+let selectedFiles = []; // ✅ Lưu files vào array
+
+if (dropzone && fileInput) {
+    // Click to select files
+    dropzone.addEventListener('click', (e) => {
+        e.preventDefault();
+        fileInput.click();
+    });
+    
+    // ✅ QUAN TRỌNG: Ngăn browser mở ảnh
+    dropzone.addEventListener('dragover', (e) => {
+        e.preventDefault(); // ✅ Bắt buộc phải có
+        e.stopPropagation();
+        dropzone.classList.add('border-primary', 'bg-primary', 'bg-opacity-10');
+    });
+    
+    dropzone.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropzone.classList.remove('border-primary', 'bg-primary', 'bg-opacity-10');
+    });
+    
+    // ✅ SỬA: Drop event handler
+    dropzone.addEventListener('drop', (e) => {
+        e.preventDefault(); // ✅ QUAN TRỌNG: Ngăn browser mở ảnh
+        e.stopPropagation();
+        dropzone.classList.remove('border-primary', 'bg-primary', 'bg-opacity-10');
+        
+        const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('image/'));
+        handleImageFiles(files);
+    });
+    
+    // File input change
+    fileInput.addEventListener('change', (e) => {
+        const files = Array.from(e.target.files);
+        handleImageFiles(files);
+    });
+}
+
+// ✅ SỬA: Lưu files vào biến global
+function handleImageFiles(files) {
+    if (files.length > 5) {
+        showAlert('danger', 'Maximum 5 images allowed');
+        return;
+    }
+    
+    // Validate file size (5MB each)
+    const maxSize = 5 * 1024 * 1024;
+    for (let file of files) {
+        if (file.size > maxSize) {
+            showAlert('danger', `File ${file.name} is too large (max 5MB)`);
+            return;
+        }
+    }
+    
+    // ✅ Lưu files vào biến
+    selectedFiles = files;
+    
+    // Preview images
+    imagePreview.innerHTML = '';
+    files.forEach((file, index) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const div = document.createElement('div');
+            div.className = 'd-inline-block position-relative me-1 mb-1';
+            div.innerHTML = `
+                <img src="${e.target.result}" class="img-thumbnail" style="width: 60px; height: 60px; object-fit: cover;">
+                <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 rounded-circle p-0" 
+                        style="width: 20px; height: 20px; font-size: 12px;" data-index="${index}">×</button>
+            `;
+            
+            // Delete button handler
+            div.querySelector('button').addEventListener('click', function() {
+                const fileIndex = parseInt(this.dataset.index);
+                selectedFiles = Array.from(selectedFiles).filter((_, i) => i !== fileIndex);
+                div.remove();
+            });
+            
+            imagePreview.appendChild(div);
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
+// ✅ SỬA: Form submission với AJAX
+const reviewForm = document.getElementById('reviewForm');
+if (reviewForm) {
+    reviewForm.addEventListener('submit', async function(e) {
+        e.preventDefault(); // ✅ QUAN TRỌNG: Ngăn form submit thông thường
+        
+        if (!ratingValue.value) {
+            ratingError.style.display = 'block';
+            ratingError.textContent = 'Please select rating';
+            return;
+        }
+        
+        const submitBtn = document.getElementById('submitReviewBtn');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Sending...';
+        
+        try {
+            // ✅ Tạo FormData mới và add files từ biến
+            const formData = new FormData();
+            formData.append('product_id', document.querySelector('input[name="product_id"]').value);
+            formData.append('rating', ratingValue.value);
+            formData.append('review_title', document.querySelector('input[name="review_title"]').value);
+            formData.append('review_text', document.querySelector('textarea[name="review_text"]').value);
+            
+            // ✅ Add selected images
+            selectedFiles.forEach((file, index) => {
+                formData.append('review_images[]', file);
+            });
+            
+            console.log('Sending review...'); // Debug
+            
+            const response = await fetch('ajax/submit_review.php', {
+                method: 'POST',
+                body: formData
+            });
+            
+            console.log('Response received:', response); // Debug
+            
+            const result = await response.json();
+            console.log('Result:', result); // Debug
+            
+            if (result.success) {
+                showAlert('success', result.message);
+                reviewForm.reset();
+                imagePreview.innerHTML = '';
+                selectedFiles = [];
+                ratingValue.value = '';
+                highlightStars(0);
+                setTimeout(() => location.reload(), 2000);
+            } else {
+                showAlert('danger', result.message);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showAlert('danger', 'Error occurred: ' + error.message);
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
+        }
+    });
+}
+
+function showAlert(type, message) {
+    const alertDiv = document.getElementById('reviewAlert');
+    if (alertDiv) {
+        alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+        alertDiv.innerHTML = `${message}<button type="button" class="btn-close" data-bs-dismiss="alert"></button>`;
+        alertDiv.style.display = 'block';
+        setTimeout(() => alertDiv.style.display = 'none', 5000);
+    }
+}
+
+function openImageModal(imageSrc) {
+    const modal = new bootstrap.Modal(document.getElementById('imageModal'));
+    document.getElementById('modalImage').src = imageSrc;
+    modal.show();
+}
+</script>
 
 
 <?php include 'views/layouts/footer.php'; ?>

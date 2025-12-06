@@ -1,5 +1,6 @@
 <?php
 session_start();
+
 require_once 'config/db.php';
 $database = new Database();
 $db = $database->connect();
@@ -107,9 +108,12 @@ switch ($page) {
         $controller = new PostController();
         $controller->detail();
         break;
+    
+        
         
     // --- ADMIN SIDE ---
     case 'admin_dashboard':
+    case 'admin_reviews':
     case 'manage_about_info':    
     case 'manage_contacts':
     case 'manage_qna':
@@ -119,10 +123,15 @@ switch ($page) {
             header("Location: index.php?page=home");
             exit();
         }
+        
+
+
+    if ($page == 'admin_reviews') {
+        include 'controllers/admin/ReviewController.php';
+    } else {
         include $adminFolder . $page . '.php';
-
-
-    
+    }
+    break;
         
     
     
