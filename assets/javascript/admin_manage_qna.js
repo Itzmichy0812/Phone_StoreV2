@@ -4,10 +4,23 @@ const qnaModal = new bootstrap.Modal(document.getElementById("qnaModal"));
 const modalTitle = document.getElementById("modalTitle");
 const addNewBtn = document.getElementById("addNewBtn");
 
-let qnaData = [];
+// Fetch all Q&A items
+async function fetchQna() {
+  try {
+    const res = await fetch('controllers/QnaController.php?action=list');
+    const result = await res.json();
+    if (result.success) {
+      renderTable(result.data);
+    } else {
+      console.error(result.message);
+    }
+  } catch (err) {
+    console.error("Failed to fetch Q&A data:", err);
+  }
+}
 
-// Render Q&A table
-function renderTable() {
+// Render table
+function renderTable(qnaData) {
   qnaTableBody.innerHTML = "";
   qnaData.forEach((item, index) => {
     const row = document.createElement("tr");
@@ -16,8 +29,8 @@ function renderTable() {
       <td>${item.question}</td>
       <td>${item.answer}</td>
       <td>
-        <button class="btn btn-sm btn-warning btn-edit" data-index="${index}">Edit</button>
-        <button class="btn btn-sm btn-danger btn-delete" data-index="${index}">Delete</button>
+        <button class="btn btn-sm btn-warning btn-edit" data-id="${item.id}">Edit</button>
+        <button class="btn btn-sm btn-danger btn-delete" data-id="${item.id}">Delete</button>
       </td>
     `;
     qnaTableBody.appendChild(row);
@@ -27,50 +40,82 @@ function renderTable() {
 // Add new Q&A
 addNewBtn.addEventListener("click", () => {
   qnaForm.reset();
-  document.getElementById("qnaIndex").value = "";
+  document.getElementById("qnaId").value = "";
   modalTitle.textContent = "Add Q&A";
 });
 
-// Form submit (Add/Edit)
-qnaForm.addEventListener("submit", (e) => {
+// Submit form (Add/Edit)
+qnaForm.addEventListener("submit", async (e) => {
   e.preventDefault();
-  const index = document.getElementById("qnaIndex").value;
+  const id = document.getElementById("qnaId").value;
   const question = document.getElementById("qnaQuestion").value;
   const answer = document.getElementById("qnaAnswer").value;
 
-  if (index === "") {
-    // Add
-    qnaData.push({ question, answer });
-  } else {
-    // Edit
-    qnaData[index] = { question, answer };
-  }
+  const action = id ? 'update' : 'create';
+  const formData = new FormData();
+  formData.append('question', question);
+  formData.append('answer', answer);
+  if (id) formData.append('id', id);
 
-  renderTable();
-  qnaModal.hide();
+  try {
+    const res = await fetch(`controllers/QnaController.php?action=${action}`, {
+      method: 'POST',
+      body: formData
+    });
+    const result = await res.json();
+
+    if (result.success) {
+      fetchQna(); // Refresh table
+      qnaModal.hide();
+    } else {
+      alert(result.message || 'Failed to save Q&A');
+    }
+  } catch (err) {
+    console.error("Failed to save Q&A:", err);
+  }
 });
 
-// Edit button
-qnaTableBody.addEventListener("click", (e) => {
+// Edit/Delete buttons
+qnaTableBody.addEventListener("click", async (e) => {
+  const id = e.target.dataset.id;
+
   if (e.target.classList.contains("btn-edit")) {
-    const index = e.target.dataset.index;
-    const item = qnaData[index];
-    document.getElementById("qnaQuestion").value = item.question;
-    document.getElementById("qnaAnswer").value = item.answer;
-    document.getElementById("qnaIndex").value = index;
-    modalTitle.textContent = "Edit Q&A";
-    qnaModal.show();
+    try {
+      const res = await fetch(`controllers/QnaController.php?action=get&id=${id}`);
+      const result = await res.json();
+      if (result.success) {
+        document.getElementById("qnaQuestion").value = result.data.question;
+        document.getElementById("qnaAnswer").value = result.data.answer;
+        document.getElementById("qnaId").value = result.data.id;
+        modalTitle.textContent = "Edit Q&A";
+        qnaModal.show();
+      } else {
+        alert(result.message || "Failed to fetch Q&A");
+      }
+    } catch (err) {
+      console.error("Failed to fetch Q&A:", err);
+    }
   }
 
-  // Delete button
   if (e.target.classList.contains("btn-delete")) {
-    const index = e.target.dataset.index;
     if (confirm("Are you sure you want to delete this Q&A?")) {
-      qnaData.splice(index, 1);
-      renderTable();
+      try {
+        const formData = new FormData();
+        formData.append('id', id);
+
+        const res = await fetch(`controllers/QnaController.php?action=delete`, {
+          method: 'POST',
+          body: formData
+        });
+        const result = await res.json();
+        if (result.success) fetchQna();
+        else alert(result.message || "Failed to delete Q&A");
+      } catch (err) {
+        console.error("Failed to delete Q&A:", err);
+      }
     }
   }
 });
 
-// Initial render
-renderTable();
+// Initial fetch
+fetchQna();

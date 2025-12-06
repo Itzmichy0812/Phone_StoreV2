@@ -99,10 +99,7 @@ if (!function_exists('getSetting')) {
 
           <!-- RIGHT COLUMN: FORM -->
           <div class="contact-form-column">
-            <!-- TODO: xử lý submit form ở Controller/Model (lưu DB + gửi mail nếu cần) -->
-            <form method="post" action="index.php?page=contact">
-              <!-- COMMENT: khi xử lý backend, bạn đọc dữ liệu từ $_POST['name'], ... -->
-
+            <form id="contactForm">
               <div class="mb-3">
                 <label for="contact_name" class="form-label">Your name</label>
                 <input
@@ -166,5 +163,8 @@ if (!function_exists('getSetting')) {
   <?php include 'views/layouts/footer.php'; ?>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Script to send user contact info to ContactController -->
+  <script src="assets/javascript/send_contact.js"></script>
 </body>
 </html>
