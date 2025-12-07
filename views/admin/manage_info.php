@@ -13,26 +13,20 @@
     </style>
 </head>
 <body>
-    <div class="page">
-        <?php include 'views/layouts/header.php'; ?>
-        <div class="page-wrapper">
-            <div class="page-header d-print-none">
-                <div class="container-xl">
-                    <div class="row g-2 align-items-center">
-                        <div class="col">
-                            <div class="page-pretitle">Management</div>
-                            <h2 class="page-title">Site Information</h2>
-                        </div>
-                        <div class="col-auto ms-auto d-print-none">
-                            <a href="?page=admin_dashboard" class="btn btn-ghost-secondary">
-                                <i class="ti ti-arrow-left me-2"></i>Back to Dashboard
-                            </a>
-                        </div>
-                    </div>
-                </div>
+    <?php include 'views/layouts/header.php'; ?>
+    
+    <!-- Admin Layout with Sidebar -->
+    <div class="admin-layout">
+        <?php include 'views/layouts/admin_sidebar.php'; ?>
+        
+        <!-- Main Content Area -->
+        <main class="admin-content">
+            <div class="content-header">
+                <h2><i class="bi bi-gear"></i> Site Information</h2>
+                <p>Manage your website settings and information</p>
             </div>
-
-            <div class="page-body">
+            
+            <div class="content-card">
                 <div class="container-xl">
                     <div class="card">
                         <div class="card-header">
@@ -410,10 +404,13 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <?php include 'views/layouts/footer.php'; ?>
+        </main>
     </div>
 
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/js/tabler.min.js"></script>
+    
     <script>
         // Set base path for AJAX calls
         window.BASE_PATH = '<?php echo dirname($_SERVER['PHP_SELF']) === '/' ? '' : dirname($_SERVER['PHP_SELF']); ?>';

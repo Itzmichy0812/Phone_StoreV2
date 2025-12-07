@@ -27,8 +27,21 @@ $action = $_POST['action'] ?? $_GET['action'] ?? '';
 switch ($action) {
     case 'get_posts':
         $status = $_GET['status'] ?? null;
-        $posts = $postModel->getAllPostsForAdmin($status);
-        echo json_encode(['success' => true, 'posts' => $posts]);
+        $page = intval($_GET['page'] ?? 1);
+        $limit = intval($_GET['limit'] ?? 10);
+        $offset = ($page - 1) * $limit;
+        
+        $posts = $postModel->getAllPostsForAdmin($status, $limit, $offset);
+        $totalPosts = $postModel->countPostsByStatus($status);
+        $totalPages = ceil($totalPosts / $limit);
+        
+        echo json_encode([
+            'success' => true, 
+            'posts' => $posts,
+            'totalPages' => $totalPages,
+            'currentPage' => $page,
+            'totalPosts' => $totalPosts
+        ]);
         break;
     
     case 'get_post':

@@ -1,37 +1,9 @@
 
 <?php require_once __DIR__ . '/../layouts/header.php'; ?>
 
-<!-- Admin Layout Wrapper - Tabler Style -->
+<!-- Admin Layout Wrapper -->
 <div class="admin-layout">
-    <!-- Tabler Sidebar -->
-    <aside class="admin-sidebar">
-        <div class="sidebar-header">
-            <h4><i class="bi bi-speedometer2"></i> Admin Panel</h4>
-        </div>
-        <nav class="sidebar-nav">
-            <a href="?page=admin_dashboard" class="sidebar-link">
-                <i class="bi bi-grid"></i> Dashboard
-            </a>
-            <a href="?page=shop" class="sidebar-link">
-                <i class="bi bi-box"></i> Products
-            </a>
-            <a href="?page=manage_orders" class="sidebar-link">
-                <i class="bi bi-cart"></i> Orders
-            </a>
-            <a href="?page=admin_reviews" class="sidebar-link active">
-                <i class="bi bi-star"></i> Reviews
-            </a>
-            <a href="?page=manage_contacts" class="sidebar-link">
-                <i class="bi bi-envelope"></i> Contacts
-            </a>
-            <a href="?page=manage_qna" class="sidebar-link">
-                <i class="bi bi-question-circle"></i> Q&A
-            </a>
-            <a href="?page=manage_about_info" class="sidebar-link">
-                <i class="bi bi-info-circle"></i> About
-            </a>
-        </nav>
-    </aside>
+    <?php include 'views/layouts/admin_sidebar.php'; ?>
 
     <!-- Main Content Area -->
     <main class="admin-content">

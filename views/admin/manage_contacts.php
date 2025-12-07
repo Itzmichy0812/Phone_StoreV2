@@ -13,13 +13,18 @@
 
   <?php include 'views/layouts/header.php'; ?>
 
-  <main class="admin-page">
-    <div class="admin-container">
+  <!-- Admin Layout with Sidebar -->
+  <div class="admin-layout">
+    <?php include 'views/layouts/admin_sidebar.php'; ?>
 
-      <h1 class="admin-title">Manage Contacts</h1>
-      <p class="admin-subtitle">
-        View and manage contact messages submitted by users.
-      </p>
+    <!-- Main Content Area -->
+    <main class="admin-content">
+      <div class="content-header">
+        <h2><i class="bi bi-envelope"></i> Manage Contacts</h2>
+        <p>View and manage contact messages submitted by users.</p>
+      </div>
+
+      <div class="content-card">
 
       <div class="table-responsive">
         <table class="table card-table table-vcenter text-nowrap" id="contactTable">
@@ -36,9 +41,9 @@
           <tbody></tbody>
         </table>
       </div>
-
-    </div>
-  </main>
+      </div>
+    </main>
+  </div>
 
   <!-- View Contact Modal -->
   <div class="modal modal-blur fade" id="viewContactModal" tabindex="-1" aria-hidden="true">

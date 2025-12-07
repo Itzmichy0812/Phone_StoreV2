@@ -3,6 +3,9 @@
 let allPosts = [];
 let currentFilter = null;
 let postModal, reactionsModal, commentsModal;
+let currentPage = 1;
+let totalPages = 1;
+const postsPerPage = 5;
 
 // Format text in content editor - Global function
 function formatText(command) {
@@ -339,16 +342,29 @@ function handleKeyboardShortcuts(e) {
 }
 
 // Load all posts
-function loadPosts(status = null) {
-    const url = status ? `ajax/manage_posts_handler.php?action=get_posts&status=${status}` : 'ajax/manage_posts_handler.php?action=get_posts';
+function loadPosts(status = null, page = 1) {
+    currentPage = page;
+    const params = new URLSearchParams({
+        action: 'get_posts',
+        page: page,
+        limit: postsPerPage
+    });
+    
+    if (status) {
+        params.append('status', status);
+    }
+    
+    const url = `ajax/manage_posts_handler.php?${params.toString()}`;
     
     fetch(url)
         .then(response => response.json())
         .then(data => {
             if (data.success) {
                 allPosts = data.posts;
+                totalPages = data.totalPages || 1;
                 displayPosts(allPosts);
                 updateStatistics(allPosts);
+                renderPagination();
             } else {
                 showAlert('Error loading posts: ' + data.message, 'danger');
             }
@@ -801,6 +817,97 @@ function showAlert(message, type = 'info') {
     if (!toastContainer) {
         toastContainer = document.createElement('div');
         toastContainer.className = 'toast-container position-fixed top-0 end-0 p-3';
+        toastContainer.style.zIndex = '9999';
+        document.body.appendChild(toastContainer);
+    }
+    
+    const iconClass = type === 'success' ? 'ti-check' : type === 'danger' ? 'ti-alert-circle' : 'ti-info-circle';
+    const bgClass = type === 'success' ? 'bg-success' : type === 'danger' ? 'bg-danger' : 'bg-info';
+    
+    const toast = document.createElement('div');
+    toast.className = `toast align-items-center text-white ${bgClass} border-0`;
+    toast.setAttribute('role', 'alert');
+    toast.setAttribute('aria-live', 'assertive');
+    toast.setAttribute('aria-atomic', 'true');
+    
+    toast.innerHTML = `
+        <div class="d-flex">
+            <div class="toast-body">
+
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    `;
+    toast.querySelector('.toast-body').innerHTML = `<i class="ti ${iconClass} me-2"></i>${message}`;
+    
+    toastContainer.appendChild(toast);
+    const bsToast = new bootstrap.Toast(toast);
+    bsToast.show();
+    
+    toast.addEventListener('hidden.bs.toast', () => toast.remove());
+}
+
+// Render pagination controls
+function renderPagination() {
+    const paginationContainer = document.getElementById('posts-pagination');
+    if (!paginationContainer) return;
+    
+    if (totalPages <= 1) {
+        paginationContainer.innerHTML = '';
+        return;
+    }
+    
+    let html = '<nav aria-label="Posts pagination" class="mt-3"><ul class="pagination justify-content-center">';
+    
+    // First page button
+    html += `<li class="page-item ${currentPage <= 1 ? 'disabled' : ''}">
+        <a class="page-link" href="#" onclick="loadPosts(currentFilter, 1); return false;" aria-label="First">
+            <span aria-hidden="true">&laquo;&laquo;</span>
+        </a>
+    </li>`;
+    
+    // Page numbers
+    const startPage = Math.max(1, currentPage - 2);
+    const endPage = Math.min(totalPages, currentPage + 2);
+    
+    if (startPage > 1) {
+        html += `<li class="page-item"><a class="page-link" href="#" onclick="loadPosts(currentFilter, 1); return false;">1</a></li>`;
+        if (startPage > 2) {
+            html += '<li class="page-item disabled"><span class="page-link">...</span></li>';
+        }
+    }
+    
+    for (let i = startPage; i <= endPage; i++) {
+        html += `<li class="page-item ${i === currentPage ? 'active' : ''}">
+            <a class="page-link" href="#" onclick="loadPosts(currentFilter, ${i}); return false;">${i}</a>
+        </li>`;
+    }
+    
+    if (endPage < totalPages) {
+        if (endPage < totalPages - 1) {
+            html += '<li class="page-item disabled"><span class="page-link">...</span></li>';
+        }
+        html += `<li class="page-item"><a class="page-link" href="#" onclick="loadPosts(currentFilter, ${totalPages}); return false;">${totalPages}</a></li>`;
+    }
+    
+    // Last page button
+    html += `<li class="page-item ${currentPage >= totalPages ? 'disabled' : ''}">
+        <a class="page-link" href="#" onclick="loadPosts(currentFilter, ${totalPages}); return false;" aria-label="Last">
+            <span aria-hidden="true">&raquo;&raquo;</span>
+        </a>
+    </li>`;
+    
+    html += '</ul></nav>';
+    paginationContainer.innerHTML = html;
+}
+
+// Show toast notification
+function showToast(message, type = 'success') {
+    let toastContainer = document.getElementById('toast-container');
+    if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.id = 'toast-container';
+        toastContainer.className = 'position-fixed top-0 end-0 p-3';
         toastContainer.style.zIndex = '9999';
         document.body.appendChild(toastContainer);
     }

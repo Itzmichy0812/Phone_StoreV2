@@ -53,36 +53,14 @@ function getStatusColor($status) {
     <link rel="stylesheet" href="assets/css/admin.css">
 </head>
 <body>
-    <div class="container-fluid">
-        <div class="row">
-            <!-- Sidebar -->
-            <div class="col-md-2 bg-dark text-white p-3" style="min-height: 100vh;">
-                <h5 class="mb-4">Admin Panel</h5>
-                <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link text-white" href="index.php?page=admin_dashboard">
-                            <i class="bi bi-speedometer2"></i> Dashboard
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white active bg-primary rounded" href="index.php?page=manage_orders">
-                            <i class="bi bi-box-seam"></i> Manage Orders
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white" href="index.php?page=admin_reviews">
-                            <i class="bi bi-star"></i> Manage Reviews
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white" href="index.php?page=home">
-                            <i class="bi bi-house"></i> Back to Site
-                        </a>
-                    </li>
-                </ul>
-            </div>
-
-            <!-- Main Content -->
+    <?php include 'views/layouts/header.php'; ?>
+    
+    <!-- Admin Layout with Sidebar -->
+    <div class="admin-layout">
+        <?php include 'views/layouts/admin_sidebar.php'; ?>
+        
+        <!-- Main Content Area -->
+        <main class="admin-content">
             <div class="col-md-10 p-4">
                 <h2 class="mb-4"><i class="bi bi-box-seam"></i> Manage Orders</h2>
 
@@ -213,8 +191,7 @@ function getStatusColor($status) {
                     </div>
                 </div>
                 <?php endif; ?>
-            </div>
-        </div>
+        </main>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

@@ -281,7 +281,7 @@ class PostModel {
      * @param string $status Filter by status (optional)
      * @return array
      */
-    public function getAllPostsForAdmin($status = null) {
+    public function getAllPostsForAdmin($status = null, $limit = null, $offset = 0) {
         $query = "SELECT 
             p.id,
             p.title,
@@ -306,13 +306,23 @@ class PostModel {
         
         $query .= " ORDER BY p.created_at DESC";
         
+        if ($limit !== null) {
+            $query .= " LIMIT ? OFFSET ?";
+        }
+        
         try {
             $stmt = $this->pdo->prepare($query);
-            if ($status) {
+            
+            if ($status && $limit !== null) {
+                $stmt->execute([$status, $limit, $offset]);
+            } elseif ($status) {
                 $stmt->execute([$status]);
+            } elseif ($limit !== null) {
+                $stmt->execute([$limit, $offset]);
             } else {
                 $stmt->execute();
             }
+            
             return $stmt->fetchAll();
         } catch (PDOException $e) {
             error_log("Error getting posts for admin: " . $e->getMessage());
@@ -400,6 +410,32 @@ class PostModel {
         } catch (PDOException $e) {
             error_log("Error getting post comments: " . $e->getMessage());
             return [];
+        }
+    }
+    
+    /**
+     * Count posts by status
+     * @param string|null $status
+     * @return int
+     */
+    public function countPostsByStatus($status = null) {
+        $query = "SELECT COUNT(*) FROM posts";
+        
+        if ($status) {
+            $query .= " WHERE status = ?";
+        }
+        
+        try {
+            $stmt = $this->pdo->prepare($query);
+            if ($status) {
+                $stmt->execute([$status]);
+            } else {
+                $stmt->execute();
+            }
+            return (int) $stmt->fetchColumn();
+        } catch (PDOException $e) {
+            error_log("Error counting posts: " . $e->getMessage());
+            return 0;
         }
     }
     

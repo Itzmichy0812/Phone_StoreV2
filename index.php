@@ -162,6 +162,12 @@ switch ($page) {
         include $adminFolder . $page . '.php';
         break;
     
+    case 'manage_products':
+        require_once 'controllers/admin/ProductAdminController.php';
+        $controller = new ProductAdminController($db);
+        $controller->index();
+        break;
+
     if (!isset($_SESSION['is_admin']) || !$_SESSION['is_admin']) {
             header("Location: index.php?page=home");
             exit();

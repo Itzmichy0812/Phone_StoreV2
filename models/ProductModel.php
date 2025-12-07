@@ -306,6 +306,87 @@ class ProductModel {
         }
     }
 
+    // === ADMIN METHODS ===
+    
+    public function createProduct($data) {
+        try {
+            $query = "INSERT INTO products (name, brand, price, storage, ram, description, image, stock, category, created_at) 
+                      VALUES (:name, :brand, :price, :storage, :ram, :description, :image, :stock, :category, NOW())";
+            
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':name', $data['name']);
+            $stmt->bindParam(':brand', $data['brand']);
+            $stmt->bindParam(':price', $data['price']);
+            $stmt->bindParam(':storage', $data['storage']);
+            $stmt->bindParam(':ram', $data['ram']);
+            $stmt->bindParam(':description', $data['description']);
+            $stmt->bindParam(':image', $data['image']);
+            $stmt->bindParam(':stock', $data['stock']);
+            $stmt->bindParam(':category', $data['category']);
+            
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            error_log("Error creating product: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function updateProduct($id, $data) {
+        try {
+            $query = "UPDATE products SET 
+                      name = :name, 
+                      brand = :brand, 
+                      price = :price, 
+                      storage = :storage, 
+                      ram = :ram, 
+                      description = :description, 
+                      image = :image, 
+                      stock = :stock,
+                      category = :category
+                      WHERE id = :id";
+            
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':id', $id);
+            $stmt->bindParam(':name', $data['name']);
+            $stmt->bindParam(':brand', $data['brand']);
+            $stmt->bindParam(':price', $data['price']);
+            $stmt->bindParam(':storage', $data['storage']);
+            $stmt->bindParam(':ram', $data['ram']);
+            $stmt->bindParam(':description', $data['description']);
+            $stmt->bindParam(':image', $data['image']);
+            $stmt->bindParam(':stock', $data['stock']);
+            $stmt->bindParam(':category', $data['category']);
+            
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            error_log("Error updating product: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function deleteProduct($id) {
+        try {
+            $query = "DELETE FROM products WHERE id = :id";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':id', $id);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            error_log("Error deleting product: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function getAllBrands() {
+        try {
+            $query = "SELECT DISTINCT brand FROM products ORDER BY brand ASC";
+            $stmt = $this->conn->query($query);
+            return $stmt->fetchAll(PDO::FETCH_COLUMN);
+        } catch (PDOException $e) {
+            error_log("Error fetching brands: " . $e->getMessage());
+            return [];
+        }
+    }
+
 }
 
 

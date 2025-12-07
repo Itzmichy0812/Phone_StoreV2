@@ -208,3 +208,16 @@
     width: 100px;
     text-align: center;
 }
+
+/* Header layout fix */
+.content-header .d-flex {
+    width: 100%;
+}
+
+.content-header .d-flex > div:first-child {
+    flex: 1;
+}
+
+.content-header .btn-primary {
+    flex-shrink: 0;
+}

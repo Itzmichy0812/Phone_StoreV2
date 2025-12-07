@@ -13,19 +13,23 @@
 
   <?php include 'views/layouts/header.php'; ?>
 
-  <main class="admin-page">
-    <div class="admin-container">
+  <!-- Admin Layout with Sidebar -->
+  <div class="admin-layout">
+    <?php include 'views/layouts/admin_sidebar.php'; ?>
 
-      <h1 class="admin-title">Manage Q&A</h1>
-      <p class="admin-subtitle">
-        Add, remove, or edit questions and answers shown on the Q&A page.
-      </p>
-
-      <div class="d-flex justify-content-end mb-3">
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#qnaModal" id="addNewBtn">
-          Add New Q&A
-        </button>
+    <!-- Main Content Area -->
+    <main class="admin-content">
+      <div class="content-header">
+        <h2><i class="bi bi-question-circle"></i> Manage Q&A</h2>
+        <p>Add, remove, or edit questions and answers shown on the Q&A page.</p>
       </div>
+
+      <div class="content-card">
+        <div class="d-flex justify-content-end mb-3">
+          <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#qnaModal" id="addNewBtn">
+            Add New Q&A
+          </button>
+        </div>
 
       <div class="table-responsive">
         <table class="table card-table table-vcenter text-nowrap" id="qnaTable">
@@ -40,9 +44,9 @@
           <tbody></tbody>
         </table>
       </div>
-
-    </div>
-  </main>
+      </div>
+    </main>
+  </div>
 
   <!-- Modal for Add/Edit Q&A -->
   <div class="modal modal-blur fade" id="qnaModal" tabindex="-1" aria-hidden="true">

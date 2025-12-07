@@ -28,33 +28,27 @@ if (!$user || $user['is_admin'] != 1) {
     <link href="assets/css/admin_manage_posts.css" rel="stylesheet">
 </head>
 <body>
-    <div class="page">
-        <?php include 'views/layouts/header.php'; ?>
-        <div class="page-wrapper">
-
-        <div class="page-wrapper">
-            <!-- Page header -->
-            <div class="page-header d-print-none">
-                <div class="container-xl">
-                    <div class="row g-2 align-items-center">
-                        <div class="col">
-                            <div class="page-pretitle">Admin</div>
-                            <h2 class="page-title">
-                                <i class="ti ti-news me-2"></i>Manage Posts
-                            </h2>
-                        </div>
-                        <div class="col-auto ms-auto">
-                            <button class="btn btn-primary" onclick="showCreateModal()">
-                                <i class="ti ti-plus me-1"></i>Create New Post
-                            </button>
-                        </div>
+    <?php include 'views/layouts/header.php'; ?>
+    
+    <!-- Admin Layout with Sidebar -->
+    <div class="admin-layout">
+        <?php include 'views/layouts/admin_sidebar.php'; ?>
+        
+        <!-- Main Content Area -->
+        <main class="admin-content">
+            <div class="content-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h2><i class="bi bi-file-text"></i> Manage Posts</h2>
+                        <p>Create, edit, and manage blog posts</p>
                     </div>
+                    <button class="btn btn-primary" onclick="showCreateModal()">
+                        <i class="ti ti-plus me-1"></i>Create New Post
+                    </button>
                 </div>
             </div>
 
-            <!-- Page body -->
-            <div class="page-body">
-                <div class="container-xl">
+            <div class="content-card">
                     <!-- Statistics Cards -->
                     <div class="row row-cards mb-3">
                         <div class="col-sm-6 col-lg-4">
@@ -143,6 +137,9 @@ if (!$user || $user['is_admin'] != 1) {
                                 </tbody>
                             </table>
                         </div>
+                        
+                        <!-- Pagination -->
+                        <div id="posts-pagination"></div>
                     </div>
                 </div>
             </div>
@@ -303,9 +300,9 @@ if (!$user || $user['is_admin'] != 1) {
                 </div>
             </div>
         </div>
+            </div>
+        </main>
     </div>
-
-    <?php include 'views/layouts/footer.php'; ?>
 
     <!-- Bootstrap JS (required for modals) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

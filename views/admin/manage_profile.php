@@ -159,33 +159,22 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 <?php include 'views/layouts/header.php'; ?>
 
-<main class="admin-page">
-  <div class="admin-container">
-
-    <!-- Banner quản lý user -->
-    <section class="admin-profile-banner mb-4">
-      <div class="admin-profile-overlay">
-        <div class="admin-profile-text">
-          <p class="admin-profile-label">Admin • User Management</p>
-          <h1 class="admin-profile-title">Manage Users</h1>
-          <p class="admin-profile-subtitle">
-            View all registered accounts, update their information, ban/unban or delete members
-            to keep your store secure.
-          </p>
+<!-- Admin Layout with Sidebar -->
+<div class="admin-layout">
+    <?php include 'views/layouts/admin_sidebar.php'; ?>
+    
+    <!-- Main Content Area -->
+    <main class="admin-content">
+        <div class="content-header">
+            <h2><i class="bi bi-people"></i> Manage Users</h2>
+            <p>View all registered accounts, update their information, ban/unban or delete members to keep your store secure.</p>
         </div>
-      </div>
-    </section>
 
-    <h2 class="admin-section-title">User list</h2>
-    <p class="admin-subtitle">
-      Edit account details, assign admin role, reset passwords or ban suspicious accounts.
-    </p>
+        <?php if ($flashMessage): ?>
+        <div class="alert alert-<?= htmlspecialchars($flashType) ?>"><?= htmlspecialchars($flashMessage) ?></div>
+        <?php endif; ?>
 
-    <?php if ($flashMessage): ?>
-      <div class="alert alert-<?= htmlspecialchars($flashType) ?>"><?= htmlspecialchars($flashMessage) ?></div>
-    <?php endif; ?>
-
-    <div class="admin-table-wrapper mt-3">
+        <div class="content-card">
       <table class="table admin-table align-middle">
         <thead>
           <tr>
@@ -327,9 +316,9 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </tbody>
       </table>
     </div>
-
-  </div>
-</main>
+        </div>
+    </main>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta10/dist/js/tabler.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

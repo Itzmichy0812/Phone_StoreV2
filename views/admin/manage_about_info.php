@@ -8,32 +8,25 @@
     <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet">
 </head>
 <body>
-    <div class="page">
-        <?php include 'views/layouts/header.php'; ?>
-        <div class="page-wrapper">
-            <div class="page-header d-print-none">
-                <div class="container-xl">
-                    <div class="row g-2 align-items-center">
-                        <div class="col">
-                            <div class="page-pretitle">Management</div>
-                            <h2 class="page-title">About Page Content</h2>
-                        </div>
-                        <div class="col-auto ms-auto d-print-none">
-                            <a href="?page=admin_dashboard" class="btn btn-ghost-secondary">
-                                <i class="ti ti-arrow-left me-2"></i>Back to Dashboard
-                            </a>
-                        </div>
-                    </div>
-                </div>
+    <?php include 'views/layouts/header.php'; ?>
+    
+    <!-- Admin Layout with Sidebar -->
+    <div class="admin-layout">
+        <?php include 'views/layouts/admin_sidebar.php'; ?>
+        
+        <!-- Main Content Area -->
+        <main class="admin-content">
+            <div class="content-header">
+                <h2><i class="bi bi-info-circle"></i> About Page Content</h2>
+                <p>Manage About page information and content</p>
             </div>
 
-            <div class="page-body">
-                <div class="container-xl">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Edit About Page Content</h3>
-                        </div>
-                        <div class="card-body">
+            <div class="content-card">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Edit About Page Content</h3>
+                    </div>
+                    <div class="card-body">
                             <form id="form-about" data-group="about">
                                 <div class="mb-3">
                                     <label class="form-label">Page Title</label>
@@ -169,7 +162,10 @@
                 </div>
             </div>
         </div>
-        <?php include 'views/layouts/footer.php'; ?>
+                    </div>
+                </div>
+            </div>
+        </main>
     </div>
 
     <script src="assets/javascript/admin_manage_about.js"></script>
