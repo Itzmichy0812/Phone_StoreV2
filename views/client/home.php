@@ -49,7 +49,7 @@ include 'views/layouts/header.php';
           </p>
 
           <button class="home2-btn" id="home2-learn-more">
-            <?php echo getSetting('home.hero_button_text', 'learn more'); ?>
+            learn more
           </button>
         </div>
 
@@ -72,7 +72,7 @@ include 'views/layouts/header.php';
           </p>
 
           <button class="home3-btn" id="home3-explore">
-            <?php echo getSetting('home.hero_button_text', 'explore'); ?>
+            explore
           </button>
         </div>
         <div class="home3-right">
