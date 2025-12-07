@@ -12,7 +12,7 @@
             <a href="?page=admin_dashboard" class="sidebar-link">
                 <i class="bi bi-grid"></i> Dashboard
             </a>
-            <a href="?page=admin_products" class="sidebar-link">
+            <a href="?page=shop" class="sidebar-link">
                 <i class="bi bi-box"></i> Products
             </a>
             <a href="?page=manage_orders" class="sidebar-link">

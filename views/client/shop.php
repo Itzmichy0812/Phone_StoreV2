@@ -243,7 +243,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
                                     ? $product['image'] 
                                     : 'assets/img/' . $product['image']; 
                             ?>
-                            <<a href="?page=product&id=<?= $product['id'] ?>" class="product-image-link">
+                            <a href="?page=product&id=<?= $product['id'] ?>" class="product-image-link">
                                 <img src="<?= htmlspecialchars($imgUrl) ?>" 
                                     alt="<?= htmlspecialchars($product['name']) ?>" 
                                     class="product-img">

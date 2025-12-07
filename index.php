@@ -118,7 +118,16 @@ switch ($page) {
         include 'views/admin/admin_dashboard.php';
         break;
     case 'admin_reviews':
+        // Gọi file Controller
+        require_once 'controllers/admin/ReviewController.php';
+        
+        // Khởi tạo Class và chạy hàm index()
+        $controller = new ReviewController();
+        $controller->index();
+        break;
     case 'manage_orders':
+        include 'views/admin/manage_orders.php';
+        break;
     case 'manage_about_info': 
         include 'views/admin/manage_about_info.php';
         break;   
