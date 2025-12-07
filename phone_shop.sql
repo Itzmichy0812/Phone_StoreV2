@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: localhost:3307
--- Thời gian đã tạo: Th12 02, 2025 lúc 07:31 PM
+-- Thời gian đã tạo: Th12 06, 2025 lúc 08:07 PM
 -- Phiên bản máy phục vụ: 10.4.32-MariaDB
 -- Phiên bản PHP: 8.2.12
 
@@ -74,8 +74,10 @@ INSERT INTO `orders` (`id`, `customer_name`, `customer_email`, `customer_phone`,
 (1, 'Tran Hong Quang', 'tranhongquangminh@gmail.com', '0326423291', 'to 34, khu pho 3a, hem 105, duong tran van xa', 'Hồ Chí Minh', '1', 'Bien Hoa city', 'cod', 49980000.00, 0.00, 0.00, 49980000.00, 'pending', '', '2025-12-01 12:00:21', '2025-12-01 12:00:21'),
 (2, 'Tran Hong Quang', 'tranhongquangminh@gmail.com', '0326423291', 'to 34, khu pho 3a, hem 105, duong tran van xa', 'Hồ Chí Minh', '1', 'Bien Hoa city', 'cod', 46000000.00, 0.00, 0.00, 46000000.00, 'pending', '', '2025-12-01 12:01:58', '2025-12-01 12:01:58'),
 (3, 'Quảng Trần', 'tran@gmail.com', '0326423291', 'tổ 34 khu phố 3A phường Trảng Dài Biên Hòa', 'Hồ Chí Minh', '1', 'Biên Hòa', 'cod', 144990000.00, 0.00, 0.00, 144990000.00, 'pending', '', '2025-12-02 12:42:36', '2025-12-02 12:42:36'),
-(4, 'Tran Hong Quang', 'tranhongquangminh@gmail.com', '0326423291', 'to 34, khu pho 3a, hem 105, duong tran van xa', 'Hải Phòng', '1', 'Bien Hoa city', 'cod', 91960000.00, 0.00, 0.00, 91960000.00, 'pending', '', '2025-12-02 16:17:11', '2025-12-02 16:17:11'),
-(5, 'Tran Hong Quang', 'tranhongquangminh@gmail.com', '0326423291', 'to 34, khu pho 3a, hem 105, duong tran van xa', 'Cần Thơ', '1', 'Bien Hoa city', 'cod', 186930000.00, 0.00, 0.00, 186930000.00, 'pending', '', '2025-12-02 18:15:15', '2025-12-02 18:15:15');
+(4, 'Tran Hong Quang', 'tranhongquangminh@gmail.com', '0326423291', 'to 34, khu pho 3a, hem 105, duong tran van xa', 'Hải Phòng', '1', 'Bien Hoa city', 'cod', 91960000.00, 0.00, 0.00, 91960000.00, 'completed', '', '2025-12-02 16:17:11', '2025-12-06 13:10:10'),
+(5, 'Tran Hong Quang', 'tranhongquangminh@gmail.com', '0326423291', 'to 34, khu pho 3a, hem 105, duong tran van xa', 'Cần Thơ', '1', 'Bien Hoa city', 'cod', 186930000.00, 0.00, 0.00, 186930000.00, '', '', '2025-12-02 18:15:15', '2025-12-06 14:03:05'),
+(6, 'Tran Hong Quang', 'tranhongquangminh@gmail.com', '0326423291', 'to 34, khu pho 3a, hem 105, duong tran van xa', 'Hồ Chí Minh', '1', 'Bien Hoa city', 'cod', 23000000.00, 0.00, 0.00, 23000000.00, 'completed', '', '2025-12-03 08:17:05', '2025-12-06 13:10:03'),
+(7, 'Tran Hong Quang', 'tranhongquangminh@gmail.com', '0326423291', 'to 34, khu pho 3a, hem 105, duong tran van xa', 'Hồ Chí Minh', '12', 'Bien Hoa city', 'bank_transfer', 22990000.00, 0.00, 0.00, 22990000.00, 'completed', '', '2025-12-06 12:33:47', '2025-12-06 13:10:02');
 
 -- --------------------------------------------------------
 
@@ -107,7 +109,9 @@ INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `product_name`, `prod
 (7, 5, 8, 'Samsung Galaxy Z Fold 6', 44990000.00, 1, 44990000.00),
 (8, 5, 9, 'iPhone 16 Pro', 29990000.00, 1, 29990000.00),
 (9, 5, 11, 'OPPO Find X7 Pro', 22990000.00, 4, 91960000.00),
-(10, 5, 12, 'OnePlus 12', 19990000.00, 1, 19990000.00);
+(10, 5, 12, 'OnePlus 12', 19990000.00, 1, 19990000.00),
+(11, 6, 1, 'iPhone 15 Pro Max', 23000000.00, 1, 23000000.00),
+(12, 7, 11, 'OPPO Find X7 Pro', 22990000.00, 1, 22990000.00);
 
 -- --------------------------------------------------------
 
@@ -211,36 +215,34 @@ CREATE TABLE `products` (
   `category` varchar(50) DEFAULT 'Phones',
   `storage` varchar(20) DEFAULT NULL,
   `ram` varchar(20) DEFAULT NULL,
-  `stock` int(11) DEFAULT 10,
-  `average_rating` decimal(2,1) DEFAULT 0.0 COMMENT 'Average rating (0.0 - 5.0)',
-  `review_count` int(11) DEFAULT 0 COMMENT 'Total reviews'
+  `stock` int(11) DEFAULT 10
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `products`
 --
 
-INSERT INTO `products` (`id`, `name`, `brand`, `price`, `image`, `description`, `created_at`, `category`, `storage`, `ram`, `stock`, `average_rating`, `review_count`) VALUES
-(1, 'iPhone 15 Pro Max', 'Apple', 23000000.00, 'https://tranphumobile.com/wp-content/uploads/2024/11/iphone-15-pro-vs-iphone-15-pro-max-256gb-512gb-1tb-mau-titan-den.jpg', 'Titanium design, A17 Pro chip, 48MP Main camera.', '2025-11-21 09:09:26', 'Phones', '512GB', '8GB', 3, 4.8, 24),
-(2, 'Samsung Galaxy S24 Ultra', 'Samsung', 18980000.00, 'https://cdn2.cellphones.com.vn/insecure/rs:fill:0:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/s/s/ss-s24-timultra-22.png', 'Galaxy AI, 200MP camera, Titanium frame.', '2025-11-21 09:09:26', 'Phones', '256GB', '12GB', 10, 0.0, 0),
-(3, 'Google Pixel 8 Pro', 'Google', 18990000.00, 'https://sonpixel.vn/wp-content/uploads/2024/01/Pixel-8-pro-trang-su.png', 'Google AI, Best camera for photos.', '2025-11-21 09:09:26', 'Phones', '128GB', '12GB', 10, 0.0, 0),
-(4, 'Xiaomi 14 Ultra', 'Xiaomi', 10990000.00, 'https://cdn2.cellphones.com.vn/insecure/rs:fill:0:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/x/i/xiaomi-14-ultra.jpg', 'Leica optics, Snapdragon 8 Gen 3.', '2025-11-21 09:09:26', 'Phones', '256GB', '12GB', 10, 0.0, 0),
-(5, 'AirPods Pro 2', 'Apple', 2490000.00, 'https://cdn2.cellphones.com.vn/insecure/rs:fill:0:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/a/i/airpods_pro_2_sep24_pdp_image_position_2__vn-vi.jpg', 'Active Noise Cancellation.', '2025-11-21 09:09:26', 'Audio', NULL, NULL, 10, 0.0, 0),
-(6, 'Galaxy Watch 6', 'Samsung', 2990000.00, 'https://cdn2.cellphones.com.vn/insecure/rs:fill:0:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/s/m/sm-r930_002_front2_graphite_1.png', 'Health monitoring, Sleep coaching.', '2025-11-21 09:09:26', 'Accessories', NULL, NULL, 10, 0.0, 0),
-(7, 'iPhone 17 Pro Max', 'Apple', 37490000.00, 'https://cdn.hoanghamobile.vn/i/preview-h-V2/Uploads/2025/09/10/iphone-17-pro-max-cosmic-orange-pdp-image-position-1-cosmic-orange-color-vn-vi.jpg', 'iPhone 17 Pro Max được ra mắt với thiết kế nguyên khối bằng nhôm siêu nhẹ, kết hợp cùng hai mặt kính cường lực chắc chắn và khả năng chống nước chuẩn IP68, tạo nên vẻ ngoài sang trọng đồng thời đảm bảo độ bền bỉ. ', '2025-11-26 05:05:05', 'Phones', '256GB', '8GB', 10, 0.0, 0),
-(8, 'Samsung Galaxy Z Fold 6', 'Samsung', 44990000.00, 'https://cdn2.cellphones.com.vn/x/media/catalog/product/s/a/samsung-galaxy-z-fold-6-xanh_5__1.png?_gl=1*1tiyek*_gcl_aw*R0NMLjE3NjQxMzQxNzIuQ2owS0NRaUF4SlhKQmhEX0FSSXNBSF9KR2poWGpjR2lXaTFWOHlUeUgweUN1WWFZRDhyS0E0N0ZEaVFXc3FLRG9DY3E3MW1PN0txd1FSY2FBdlRRRUFMd', 'Màn hình Dynamic AMOLED 2X 7.6 inch, Snapdragon 8 Gen 3, Camera 50MP với AI nâng cấp, pin 4400mAh, hỗ trợ S Pen.', '2025-11-26 05:13:46', 'Phones', '512GB', '12GB', 14, 0.0, 0),
-(9, 'iPhone 16 Pro', 'Apple', 29990000.00, 'https://cdn2.cellphones.com.vn/x/media/catalog/product/i/p/iphone-16-pro_1.png', 'Chip A18 Pro, camera 48MP với telephoto 5x, màn hình ProMotion 120Hz, titan thiết kế, iOS 18.', '2025-11-26 05:13:46', 'Phones', '256GB', '8GB', 17, 0.0, 0),
-(11, 'OPPO Find X7 Pro', 'Oppo', 22990000.00, 'https://cdn2.cellphones.com.vn/x/media/catalog/product/o/p/oppo-find-x7_1.png', 'Camera Hasselblad 50MP, chip Dimensity 9300, màn hình AMOLED 6.82 inch 120Hz, pin 5000mAh, sạc 100W.', '2025-11-26 05:13:46', 'Phones', '256GB', '12GB', 10, 0.0, 0),
-(12, 'OnePlus 12', 'OnePlus', 19990000.00, 'https://cdn2.cellphones.com.vn/x/media/catalog/product/o/n/oneplus-12.jpg', 'Snapdragon 8 Gen 3, màn hình LTPO AMOLED 6.82 inch, camera Hasselblad 50MP, sạc nhanh 100W.', '2025-11-26 05:13:46', 'Phones', '256GB', '12GB', 12, 0.0, 0),
-(13, 'Vivo X100 Pro', 'Vivo', 21990000.00, 'https://cdn2.cellphones.com.vn/x/media/catalog/product/d/i/dien-thoai-vivo-x100-pro_1_.png', 'Camera Zeiss 50MP với telephoto periscope, chip Dimensity 9300, màn hình AMOLED 6.78 inch cong, pin 5400mAh.', '2025-11-26 05:13:46', 'Phones', '512GB', '16GB', 10, 0.0, 0),
-(14, 'Google Pixel 9 Pro', 'Google', 26990000.00, 'https://cdn2.cellphones.com.vn/x/media/catalog/product/d/i/dien-thoai-google-pixel-9-pro_1_.png', 'Google Tensor G4, camera AI 50MP với Magic Editor nâng cấp, màn hình LTPO OLED 6.7 inch, Android 15.', '2025-11-26 05:13:46', 'Phones', '256GB', '12GB', 16, 0.0, 0),
-(15, 'iPhone 16 Plus', 'Apple', 25990000.00, 'https://cdn2.cellphones.com.vn/x/media/catalog/product/i/p/iphone-16-plus-1.png', 'Chip A18, màn hình Super Retina XDR 6.7 inch, camera 48MP Fusion, pin lớn nhất trong dòng iPhone 16.', '2025-11-26 05:13:46', 'Phones', '256GB', '8GB', 22, 0.0, 0),
-(17, 'Xiaomi 14T Pro', 'Xiaomi', 14990000.00, 'https://cdn2.cellphones.com.vn/x/media/catalog/product/x/i/xiaomi_14t_pro_1_.png', 'Camera Leica 50MP, chip Dimensity 9300+, màn hình AMOLED 6.67 inch 144Hz, sạc nhanh 120W.', '2025-11-26 05:13:46', 'Phones', '256GB', '12GB', 30, 0.0, 0),
-(18, 'AirPods Pro 2 (USB-C)', 'Apple', 6490000.00, 'https://cdn2.cellphones.com.vn/x/media/catalog/product/a/i/airpods_pro_2_sep24_pdp_image_position_2__vn-vi.jpg?_gl=1*na33bz*_gcl_aw*R0NMLjE3NjQxMzQxNzIuQ2owS0NRaUF4SlhKQmhEX0FSSXNBSF9KR2poWGpjR2lXaTFWOHlUeUgweUN1WWFZRDhyS0E0N0ZEaVFXc3FLRG9DY3E3MW1PN0txd1F', 'Chip H2 nâng cấp, chống ồn chủ động ANC 2.0, âm thanh không gian, case sạc USB-C, chống nước IP54.', '2025-11-26 05:13:46', 'Audio', NULL, NULL, 50, 0.0, 0),
-(19, 'Samsung Galaxy Buds3 Pro', 'Samsung', 4990000.00, 'https://cdn2.cellphones.com.vn/x/media/catalog/product/t/a/tai-nghe-samsung-galaxy-buds-3-pro_9_.png', 'Thiết kế dạng thân, ANC thông minh, âm thanh 360 Audio, pin 30 giờ, kết nối đa điểm.', '2025-11-26 05:13:46', 'Audio', NULL, NULL, 40, 0.0, 0),
-(20, 'Apple Watch Series 10', 'Apple', 10990000.00, 'https://cdn2.cellphones.com.vn/x/media/catalog/product/t/e/text_ng_n_5__9_237.png', 'Chip S10, màn hình LTPO3 OLED lớn hơn, cảm biến sức khỏe nâng cao, pin 36 giờ, watchOS 11.', '2025-11-26 05:13:46', 'Accessories', NULL, NULL, 35, 0.0, 0),
-(21, 'Samsung Galaxy Watch7', 'Samsung', 7990000.00, 'https://cdn2.cellphones.com.vn/x/media/catalog/product/s/m/sm-l300_002_front2_cream_240429.png', 'Chip Exynos W1000, theo dõi sức khỏe toàn diện, màn hình Super AMOLED 1.5 inch, pin 2 ngày, One UI Watch 6.', '2025-11-26 05:13:46', 'Accessories', NULL, NULL, 28, 0.0, 0),
-(22, 'Xiaomi Smart Band 9 Pro', 'Xiaomi', 1290000.00, 'https://cdn2.cellphones.com.vn/x/media/catalog/product/t/e/text_ng_n_3__6_15.png', 'Màn hình AMOLED 1.74 inch, GPS tích hợp, theo dõi 150+ môn thể thao, pin 14 ngày, chống nước 5ATM.', '2025-11-26 05:13:46', 'Accessories', NULL, NULL, 60, 0.0, 0);
+INSERT INTO `products` (`id`, `name`, `brand`, `price`, `image`, `description`, `created_at`, `category`, `storage`, `ram`, `stock`) VALUES
+(1, 'iPhone 15 Pro Max', 'Apple', 23000000.00, 'https://tranphumobile.com/wp-content/uploads/2024/11/iphone-15-pro-vs-iphone-15-pro-max-256gb-512gb-1tb-mau-titan-den.jpg', 'Titanium design, A17 Pro chip, 48MP Main camera.', '2025-11-21 09:09:26', 'Phones', '512GB', '8GB', 2),
+(2, 'Samsung Galaxy S24 Ultra', 'Samsung', 18980000.00, 'https://cdn2.cellphones.com.vn/insecure/rs:fill:0:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/s/s/ss-s24-timultra-22.png', 'Galaxy AI, 200MP camera, Titanium frame.', '2025-11-21 09:09:26', 'Phones', '256GB', '12GB', 10),
+(3, 'Google Pixel 8 Pro', 'Google', 18990000.00, 'https://sonpixel.vn/wp-content/uploads/2024/01/Pixel-8-pro-trang-su.png', 'Google AI, Best camera for photos.', '2025-11-21 09:09:26', 'Phones', '128GB', '12GB', 10),
+(4, 'Xiaomi 14 Ultra', 'Xiaomi', 10990000.00, 'https://cdn2.cellphones.com.vn/insecure/rs:fill:0:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/x/i/xiaomi-14-ultra.jpg', 'Leica optics, Snapdragon 8 Gen 3.', '2025-11-21 09:09:26', 'Phones', '256GB', '12GB', 10),
+(5, 'AirPods Pro 2', 'Apple', 2490000.00, 'https://cdn2.cellphones.com.vn/insecure/rs:fill:0:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/a/i/airpods_pro_2_sep24_pdp_image_position_2__vn-vi.jpg', 'Active Noise Cancellation.', '2025-11-21 09:09:26', 'Audio', NULL, NULL, 10),
+(6, 'Galaxy Watch 6', 'Samsung', 2990000.00, 'https://cdn2.cellphones.com.vn/insecure/rs:fill:0:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/s/m/sm-r930_002_front2_graphite_1.png', 'Health monitoring, Sleep coaching.', '2025-11-21 09:09:26', 'Accessories', NULL, NULL, 10),
+(7, 'iPhone 17 Pro Max', 'Apple', 37490000.00, 'https://cdn.hoanghamobile.vn/i/preview-h-V2/Uploads/2025/09/10/iphone-17-pro-max-cosmic-orange-pdp-image-position-1-cosmic-orange-color-vn-vi.jpg', 'iPhone 17 Pro Max được ra mắt với thiết kế nguyên khối bằng nhôm siêu nhẹ, kết hợp cùng hai mặt kính cường lực chắc chắn và khả năng chống nước chuẩn IP68, tạo nên vẻ ngoài sang trọng đồng thời đảm bảo độ bền bỉ. ', '2025-11-26 05:05:05', 'Phones', '256GB', '8GB', 10),
+(8, 'Samsung Galaxy Z Fold 6', 'Samsung', 44990000.00, 'https://cdn2.cellphones.com.vn/x/media/catalog/product/s/a/samsung-galaxy-z-fold-6-xanh_5__1.png?_gl=1*1tiyek*_gcl_aw*R0NMLjE3NjQxMzQxNzIuQ2owS0NRaUF4SlhKQmhEX0FSSXNBSF9KR2poWGpjR2lXaTFWOHlUeUgweUN1WWFZRDhyS0E0N0ZEaVFXc3FLRG9DY3E3MW1PN0txd1FSY2FBdlRRRUFMd', 'Màn hình Dynamic AMOLED 2X 7.6 inch, Snapdragon 8 Gen 3, Camera 50MP với AI nâng cấp, pin 4400mAh, hỗ trợ S Pen.', '2025-11-26 05:13:46', 'Phones', '512GB', '12GB', 14),
+(9, 'iPhone 16 Pro', 'Apple', 29990000.00, 'https://cdn2.cellphones.com.vn/x/media/catalog/product/i/p/iphone-16-pro_1.png', 'Chip A18 Pro, camera 48MP với telephoto 5x, màn hình ProMotion 120Hz, titan thiết kế, iOS 18.', '2025-11-26 05:13:46', 'Phones', '256GB', '8GB', 17),
+(11, 'OPPO Find X7 Pro', 'Oppo', 22990000.00, 'https://cdn2.cellphones.com.vn/x/media/catalog/product/o/p/oppo-find-x7_1.png', 'Camera Hasselblad 50MP, chip Dimensity 9300, màn hình AMOLED 6.82 inch 120Hz, pin 5000mAh, sạc 100W.', '2025-11-26 05:13:46', 'Phones', '256GB', '12GB', 9),
+(12, 'OnePlus 12', 'OnePlus', 19990000.00, 'https://cdn2.cellphones.com.vn/x/media/catalog/product/o/n/oneplus-12.jpg', 'Snapdragon 8 Gen 3, màn hình LTPO AMOLED 6.82 inch, camera Hasselblad 50MP, sạc nhanh 100W.', '2025-11-26 05:13:46', 'Phones', '256GB', '12GB', 12),
+(13, 'Vivo X100 Pro', 'Vivo', 21990000.00, 'https://cdn2.cellphones.com.vn/x/media/catalog/product/d/i/dien-thoai-vivo-x100-pro_1_.png', 'Camera Zeiss 50MP với telephoto periscope, chip Dimensity 9300, màn hình AMOLED 6.78 inch cong, pin 5400mAh.', '2025-11-26 05:13:46', 'Phones', '512GB', '16GB', 10),
+(14, 'Google Pixel 9 Pro', 'Google', 26990000.00, 'https://cdn2.cellphones.com.vn/x/media/catalog/product/d/i/dien-thoai-google-pixel-9-pro_1_.png', 'Google Tensor G4, camera AI 50MP với Magic Editor nâng cấp, màn hình LTPO OLED 6.7 inch, Android 15.', '2025-11-26 05:13:46', 'Phones', '256GB', '12GB', 16),
+(15, 'iPhone 16 Plus', 'Apple', 25990000.00, 'https://cdn2.cellphones.com.vn/x/media/catalog/product/i/p/iphone-16-plus-1.png', 'Chip A18, màn hình Super Retina XDR 6.7 inch, camera 48MP Fusion, pin lớn nhất trong dòng iPhone 16.', '2025-11-26 05:13:46', 'Phones', '256GB', '8GB', 22),
+(17, 'Xiaomi 14T Pro', 'Xiaomi', 14990000.00, 'https://cdn2.cellphones.com.vn/x/media/catalog/product/x/i/xiaomi_14t_pro_1_.png', 'Camera Leica 50MP, chip Dimensity 9300+, màn hình AMOLED 6.67 inch 144Hz, sạc nhanh 120W.', '2025-11-26 05:13:46', 'Phones', '256GB', '12GB', 30),
+(18, 'AirPods Pro 2 (USB-C)', 'Apple', 6490000.00, 'https://cdn2.cellphones.com.vn/x/media/catalog/product/a/i/airpods_pro_2_sep24_pdp_image_position_2__vn-vi.jpg?_gl=1*na33bz*_gcl_aw*R0NMLjE3NjQxMzQxNzIuQ2owS0NRaUF4SlhKQmhEX0FSSXNBSF9KR2poWGpjR2lXaTFWOHlUeUgweUN1WWFZRDhyS0E0N0ZEaVFXc3FLRG9DY3E3MW1PN0txd1F', 'Chip H2 nâng cấp, chống ồn chủ động ANC 2.0, âm thanh không gian, case sạc USB-C, chống nước IP54.', '2025-11-26 05:13:46', 'Audio', NULL, NULL, 50),
+(19, 'Samsung Galaxy Buds3 Pro', 'Samsung', 4990000.00, 'https://cdn2.cellphones.com.vn/x/media/catalog/product/t/a/tai-nghe-samsung-galaxy-buds-3-pro_9_.png', 'Thiết kế dạng thân, ANC thông minh, âm thanh 360 Audio, pin 30 giờ, kết nối đa điểm.', '2025-11-26 05:13:46', 'Audio', NULL, NULL, 40),
+(20, 'Apple Watch Series 10', 'Apple', 10990000.00, 'https://cdn2.cellphones.com.vn/x/media/catalog/product/t/e/text_ng_n_5__9_237.png', 'Chip S10, màn hình LTPO3 OLED lớn hơn, cảm biến sức khỏe nâng cao, pin 36 giờ, watchOS 11.', '2025-11-26 05:13:46', 'Accessories', NULL, NULL, 35),
+(21, 'Samsung Galaxy Watch7', 'Samsung', 7990000.00, 'https://cdn2.cellphones.com.vn/x/media/catalog/product/s/m/sm-l300_002_front2_cream_240429.png', 'Chip Exynos W1000, theo dõi sức khỏe toàn diện, màn hình Super AMOLED 1.5 inch, pin 2 ngày, One UI Watch 6.', '2025-11-26 05:13:46', 'Accessories', NULL, NULL, 28),
+(22, 'Xiaomi Smart Band 9 Pro', 'Xiaomi', 1290000.00, 'https://cdn2.cellphones.com.vn/x/media/catalog/product/t/e/text_ng_n_3__6_15.png', 'Màn hình AMOLED 1.74 inch, GPS tích hợp, theo dõi 150+ môn thể thao, pin 14 ngày, chống nước 5ATM.', '2025-11-26 05:13:46', 'Accessories', NULL, NULL, 60);
 
 -- --------------------------------------------------------
 
@@ -276,14 +278,30 @@ INSERT INTO `product_images` (`id`, `product_id`, `image_url`, `is_primary`, `di
 CREATE TABLE `product_reviews` (
   `id` int(11) NOT NULL,
   `product_id` int(11) NOT NULL,
-  `user_id` int(11) DEFAULT NULL,
-  `customer_name` varchar(100) NOT NULL,
+  `user_id` int(11) NOT NULL,
   `rating` int(11) NOT NULL CHECK (`rating` between 1 and 5),
-  `review_title` varchar(200) DEFAULT NULL,
-  `review_text` text DEFAULT NULL,
-  `verified_purchase` tinyint(1) DEFAULT 0,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `status` enum('pending','approved','rejected') DEFAULT 'pending',
+  `review_title` varchar(255) DEFAULT NULL,
+  `review_text` text NOT NULL,
+  `review_images` text DEFAULT NULL,
+  `is_verified_purchase` tinyint(1) DEFAULT 0,
+  `is_approved` tinyint(1) DEFAULT 0,
+  `admin_reply` text DEFAULT NULL,
+  `admin_reply_at` timestamp NULL DEFAULT NULL,
+  `helpful_count` int(11) DEFAULT 0,
+  `unhelpful_count` int(11) DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `product_reviews`
+--
+
+INSERT INTO `product_reviews` (`id`, `product_id`, `user_id`, `rating`, `status`, `review_title`, `review_text`, `review_images`, `is_verified_purchase`, `is_approved`, `admin_reply`, `admin_reply_at`, `helpful_count`, `unhelpful_count`, `created_at`, `updated_at`) VALUES
+(9, 1, 9, 5, 'approved', 'dsad', 'dấdasd', '[\"review_1_9_1764920670_69328d5ec52e4.jpg\"]', NULL, 1, NULL, NULL, 0, 0, '2025-12-05 07:44:30', '2025-12-06 03:58:07'),
+(10, 12, 9, 5, 'approved', 'ngon', 'ngonngonngonngonngonngonngonngonngonngonngonngonngonngonngonngonngonngonngonngonngonngonngonngonngonngonngonngonngonngonngonngonngonngonngonngonngonngonngonngonngonngonngonngonngonngonngonngonngonngonngonngonngonngonngonngonngonngonngonngonngonngonngonngonngonngon', NULL, NULL, 1, NULL, NULL, 0, 0, '2025-12-06 03:47:56', '2025-12-06 11:52:18'),
+(11, 12, 10, 3, 'approved', 'ok', 'ok', '[\"review_12_10_1765021977_6934191959424.jpg\"]', NULL, 1, NULL, NULL, 0, 0, '2025-12-06 11:52:57', '2025-12-06 11:53:16');
 
 -- --------------------------------------------------------
 
@@ -340,6 +358,7 @@ CREATE TABLE `users` (
   `username` varchar(50) NOT NULL,
   `password` varchar(255) NOT NULL,
   `full_name` varchar(100) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
   `is_admin` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -434,8 +453,10 @@ ALTER TABLE `product_images`
 --
 ALTER TABLE `product_reviews`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `idx_product_reviews_product_id` (`product_id`),
-  ADD KEY `idx_product_reviews_rating` (`rating`);
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `idx_product_approved` (`product_id`,`is_approved`),
+  ADD KEY `idx_rating` (`rating`),
+  ADD KEY `idx_created_at` (`created_at`);
 
 --
 -- Chỉ mục cho bảng `product_variants`
@@ -471,13 +492,13 @@ ALTER TABLE `contacts`
 -- AUTO_INCREMENT cho bảng `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT cho bảng `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT cho bảng `posts`
@@ -519,7 +540,7 @@ ALTER TABLE `product_images`
 -- AUTO_INCREMENT cho bảng `product_reviews`
 --
 ALTER TABLE `product_reviews`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT cho bảng `product_variants`
@@ -580,7 +601,8 @@ ALTER TABLE `product_images`
 -- Các ràng buộc cho bảng `product_reviews`
 --
 ALTER TABLE `product_reviews`
-  ADD CONSTRAINT `product_reviews_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `product_reviews_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `product_reviews_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Các ràng buộc cho bảng `product_variants`
