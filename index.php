@@ -109,24 +109,75 @@ switch ($page) {
         $controller->detail();
         break;
     
-        
-        
+    case 'profile':
+        include 'views/client/profile.php';
+        break;
+    
     // --- ADMIN SIDE ---
     case 'admin_dashboard':
+        include 'views/admin/admin_dashboard.php';
+        break;
     case 'admin_reviews':
-    case 'manage_orders':
-    case 'manage_about_info':    
-    case 'manage_contacts':
-    case 'manage_qna':
-    case 'manage_info':
-    case 'order_details':
+        // Gọi file Controller
+        require_once 'controllers/admin/ReviewController.php';
         
+        // Khởi tạo Class và chạy hàm index()
+        $controller = new ReviewController();
+        $controller->index();
+        break;
+    case 'manage_orders':
+        include 'views/admin/manage_orders.php';
+        break;
+    case 'manage_about_info': 
+        include 'views/admin/manage_about_info.php';
+        break;   
+    case 'manage_contacts':
+        include 'views/admin/manage_contacts.php';
+        break;
+    case 'manage_qna':
+        include 'views/admin/manage_qna.php';
+        break;
+    case 'manage_info':
+        include 'views/admin/manage_info.php';
+        break;
+    case 'manage_profile':
+        include 'views/admin/manage_profile.php';
+        break;
+    case 'manage_posts':
+        // Check if user is logged in and is admin
+        if (!isset($_SESSION['user_id'])) {
+            header("Location: index.php?page=login_signup");
+            exit();
+        }
+        
+        // Verify user is admin
+        $stmt = $db->prepare("SELECT is_admin FROM users WHERE id = ?");
+        $stmt->execute([$_SESSION['user_id']]);
+        $user = $stmt->fetch();
+        
+        if (!$user || $user['is_admin'] != 1) {
+            die("<div class='alert alert-danger container mt-5'>Access denied. Admin only.</div>");
+        }
+        
+        include $adminFolder . $page . '.php';
+        break;
+    
+    case 'manage_products':
+        require_once 'controllers/admin/ProductAdminController.php';
+        $controller = new ProductAdminController($db);
+        $controller->index();
+        break;
+
     if (!isset($_SESSION['is_admin']) || !$_SESSION['is_admin']) {
             header("Location: index.php?page=home");
             exit();
         }
-        
-   
+        include $adminFolder . $page . '.php';
+    case 'order_details':
+         if (!isset($_SESSION['is_admin']) || !$_SESSION['is_admin']) {
+            header("Location: index.php?page=home");
+            exit();
+        }
 
     if ($page == 'admin_reviews') {
         include 'controllers/admin/ReviewController.php';
@@ -134,10 +185,7 @@ switch ($page) {
         include $adminFolder . $page . '.php';
     }
     break;
-    
-  
-    
-    
+
     // --- 404 ERROR ---
     default:
         echo "<h1>404 - Page Not Found</h1>";

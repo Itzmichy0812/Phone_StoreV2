@@ -4,12 +4,18 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+require_once 'helpers/settings_helper.php';
 require_once 'models/CartModel.php';
 $cartCount = CartModel::getItemCount();
 
 // Check if user is logged in
 $isLoggedIn = isset($_SESSION['user_id']);
 $username = $isLoggedIn ? $_SESSION['username'] : null;
+
+// Get settings
+$siteName = getSetting('general.site_name', 'PhoneStore');
+$logoPath = getSetting('general.site_logo', 'assets/img/logo.jpg');
+$siteLogo = getImageUrl($logoPath);
 ?>
 
 <!DOCTYPE html>
@@ -17,7 +23,8 @@ $username = $isLoggedIn ? $_SESSION['username'] : null;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PhoneStore</title>
+    <title><?php echo htmlspecialchars($siteName); ?></title>
+    <link rel="icon" type="image/png" href="<?php echo htmlspecialchars($siteLogo); ?>">
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
@@ -34,7 +41,7 @@ $username = $isLoggedIn ? $_SESSION['username'] : null;
     <div class="nav-container">
       <div class="nav-logo">
         <a href="index.php?page=home">
-            <img src="assets/img/logo.png" alt="PhoneStore Logo">
+            <img src="<?php echo htmlspecialchars($siteLogo); ?>" alt="<?php echo htmlspecialchars($siteName); ?> Logo">
         </a>
       </div>
 
@@ -45,6 +52,7 @@ $username = $isLoggedIn ? $_SESSION['username'] : null;
         <a href="index.php?page=about" class="nav-link">About</a>
         <a href="index.php?page=contact" class="nav-link">Contact</a>
         <a href="index.php?page=qna" class="nav-link">Q&A</a>
+        <a href="index.php?page=profile" class="nav-link">Profile</a>
         
         <!-- Admin link visible only for admin -->
         <?php if ($isLoggedIn && isset($_SESSION['is_admin']) && $_SESSION['is_admin'] == 1): ?>

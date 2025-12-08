@@ -381,7 +381,7 @@ class ProductReviewModel {
 public function getAllReviewsAdmin($status = 'all', $limit = 20, $offset = 0) {
     $sql = "SELECT 
                 pr.*,
-                u.full_name as user_name,
+                COALESCE(u.full_name, u.username) as user_name,
                 u.email as user_email,
                 p.name as product_name,
                 p.image as product_image

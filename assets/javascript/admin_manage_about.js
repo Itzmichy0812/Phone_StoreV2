@@ -1,51 +1,112 @@
-const previewModal = new bootstrap.Modal(document.getElementById("previewModal"));
-const previewBody = document.getElementById("previewBody");
+// admin_manage_about.js
 
-// Convert file input to Base64 (client-side only)
-function readImage(input, callback) {
-  if (!input.files || !input.files[0]) return callback(null);
+document.addEventListener('DOMContentLoaded', function() {
+    loadAboutSettings();
+    setupFormHandler();
+});
 
-  const reader = new FileReader();
-  reader.onload = () => callback(reader.result);
-  reader.readAsDataURL(input.files[0]);
+// Load about page settings
+async function loadAboutSettings() {
+    try {
+        const response = await fetch('ajax/settings_handler.php?action=get_by_group&group=about');
+        const result = await response.json();
+        
+        if (result.success) {
+            populateFields(result.data);
+        } else {
+            showToast('error', result.message || 'Error loading data');
+        }
+    } catch (error) {
+        console.error('Error loading about settings:', error);
+        showToast('error', 'Server connection error');
+    }
 }
 
-// Preview Button
-document.getElementById("previewBtn").addEventListener("click", () => {
-  previewBody.innerHTML = "Loading...";
+// Populate form fields with loaded data
+function populateFields(settings) {
+    for (const key in settings) {
+        // Field ID is about_key (e.g., "about_title")
+        const fieldId = 'about_' + key;
+        const field = document.getElementById(fieldId);
+        
+        if (field) {
+            field.value = settings[key] || '';
+        }
+    }
+}
 
-  Promise.all([
-    new Promise(res => readImage(document.getElementById("sec1Image"), res)),
-    new Promise(res => readImage(document.getElementById("sec2Image"), res)),
-    new Promise(res => readImage(document.getElementById("sec3Image"), res)),
-  ]).then(([img1, img2, img3]) => {
+// Setup form submit handler
+function setupFormHandler() {
+    const form = document.getElementById('form-about');
+    if (form) {
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            await saveAboutSettings(form);
+        });
+    }
+}
 
-    previewBody.innerHTML = `
-      <div class="preview-section">
-        <h3>${sec1Title.value}</h3>
-        <p>${sec1Text.value}</p>
-        ${img1 ? `<img src="${img1}">` : ""}
-      </div>
+// Save about page settings
+async function saveAboutSettings(form) {
+    const formData = new FormData(form);
+    const group = form.dataset.group; // Get group from data-group attribute
+    const settings = {};
+    
+    // Build settings object with group prefix: about_key
+    for (const [key, value] of formData.entries()) {
+        settings[group + '_' + key] = value;
+    }
+    
+    try {
+        const response = await fetch('ajax/settings_handler.php?action=save', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ settings })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            showToast('success', result.message || 'Saved successfully!');
+        } else {
+            showToast('error', result.message || 'Error saving data');
+        }
+    } catch (error) {
+        console.error('Error saving about settings:', error);
+        showToast('error', 'Server connection error');
+    }
+}
 
-      <div class="preview-section">
-        <h3>${sec2Title.value}</h3>
-        <p>${sec2Text.value}</p>
-        ${img2 ? `<img src="${img2}">` : ""}
-      </div>
-
-      <div class="preview-section">
-        <h3>${sec3Title.value}</h3>
-        <p>${sec3Text.value}</p>
-        ${img3 ? `<img src="${img3}">` : ""}
-      </div>
+// Show toast notification
+function showToast(type, message) {
+    // Create toast element
+    const toast = document.createElement('div');
+    toast.className = `alert alert-${type === 'success' ? 'success' : 'danger'} alert-dismissible`;
+    toast.style.position = 'fixed';
+    toast.style.top = '20px';
+    toast.style.right = '20px';
+    toast.style.zIndex = '9999';
+    toast.style.minWidth = '300px';
+    
+    toast.innerHTML = `
+        <div class="d-flex">
+            <div>
+                <i class="ti ti-${type === 'success' ? 'check' : 'alert-circle'} me-2"></i>
+            </div>
+            <div>
+                <h4 class="alert-title">${type === 'success' ? 'Success' : 'Error'}!</h4>
+                <div class="text-secondary">${message}</div>
+            </div>
+        </div>
+        <a class="btn-close" data-bs-dismiss="alert" aria-label="close"></a>
     `;
-  });
-
-  previewModal.show();
-});
-
-// Save Button
-document.getElementById("aboutForm").addEventListener("submit", (e) => {
-  e.preventDefault();
-  alert("Demo only: Changes not saved to database yet.");
-});
+    
+    document.body.appendChild(toast);
+    
+    // Auto remove after 3 seconds
+    setTimeout(() => {
+        toast.remove();
+    }, 3000);
+}

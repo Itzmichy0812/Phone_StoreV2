@@ -2,7 +2,7 @@
 // config/db.php
 
 // --- PHẦN 1: Cấu hình chung ---
-$db_host = 'localhost';
+$db_host = '127.0.0.1';
 $db_user = 'root';
 $db_pass = '';          // Mặc định XAMPP là rỗng
 $db_name = 'phone_shop';
