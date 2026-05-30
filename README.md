@@ -1,41 +1,82 @@
-# PhoneStore – Online Phone Shop (PHP + MySQL)
+# PhoneStore – Online Phone Shop
 
-Đây là project web bán điện thoại **PhoneStore** xây dựng bằng **PHP thuần** (MVC đơn giản), **MySQL**, **Bootstrap 5** và JavaScript.
-
-Project gồm các chức năng chính:
-
-- Trang Home.
-- Xem danh sách sản phẩm, lọc, thêm vào giỏ hàng.
-- Đăng ký / đăng nhập người dùng, phân quyền admin.
-- Trang Q&A, About, Contact (gửi form liên hệ).
-- Trang quản trị (admin) quản lý sản phẩm / nội dung.
+PhoneStore is an online phone and electronics store built with **pure PHP**, **MySQL**, **Bootstrap 5**, and **JavaScript**.  
+The project follows a simple MVC-style structure and includes both client-side pages and an admin management area.
 
 ---
 
-## 1. Yêu cầu hệ thống
+## Table of Contents
 
-- **PHP** >= 8.0  
-  - Kiểm tra: `php -v`
-- **MySQL** (hoặc MariaDB)
-- Một web server:
-  - PHP built-in server (`php -S`) **hoặc**
-  - XAMPP / MAMP / WAMP
-
-> Hướng dẫn bên dưới giả sử tên folder là `Phone_Store_Web_dev`. Nếu bạn đổi tên khác, chỉ cần thay đúng tên folder trong đường dẫn.
+- [Features](#features)
+- [Technology Stack](#technology-stack)
+- [System Requirements](#system-requirements)
+- [Project Structure](#project-structure)
+- [Installation](#installation)
+- [Database Setup](#database-setup)
+- [Database Configuration](#database-configuration)
+- [Run the Project](#run-the-project)
+- [Notes](#notes)
 
 ---
 
-## 2. Clone / copy project
+## Features
 
-Đặt toàn bộ folder project vào nơi bạn muốn làm việc, ví dụ:
+### Client Side
+
+- Home page
+- Product listing page
+- Product filtering
+- Shopping cart
+- User registration and login
+- Q&A page
+- About page
+- Contact page with contact form
+
+### Admin Side
+
+- Admin authentication and authorization
+- Product management
+- Content management
+- Admin dashboard
+
+---
+
+## Technology Stack
+
+- **Backend:** PHP
+- **Database:** MySQL / MariaDB
+- **Frontend:** HTML, CSS, JavaScript, Bootstrap 5
+- **Architecture:** Simple MVC-style structure
+- **Web Server:** PHP built-in server, XAMPP, MAMP, or WAMP
+
+---
+
+## System Requirements
+
+Before running this project, make sure your machine has:
+
+- **PHP >= 8.0**
 
 ```bash
-~/Projects/Phone_Store_Web_dev
+php -v
 ```
 
-## Cấu trúc chính:
+- **MySQL** or **MariaDB**
+- A local web server, such as:
+  - PHP built-in server
+  - XAMPP
+  - MAMP
+  - WAMP
 
-Phone_Store_Web_dev/
+> This guide assumes the project folder is named `Phone_StoreV2`.  
+> If you use another folder name, update the path accordingly.
+
+---
+
+## Project Structure
+
+```text
+Phone_StoreV2/
 ├── ajax/
 ├── assets/
 │   ├── css/
@@ -49,97 +90,192 @@ Phone_Store_Web_dev/
 ├── views/
 │   ├── admin/
 │   ├── client/
-│   └── layouts/   (header.php, footer.php, ...)
-├── index.php       (front controller)
-├── phone_shop.sql  (file database)
+│   └── layouts/
+│       ├── header.php
+│       └── footer.php
+├── index.php
+├── phone_shop.sql
 └── README.md
+```
 
-## 3. Tạo database
+### Main Files and Folders
 
-1. Mở phpMyAdmin (nếu dùng XAMPP) hoặc dùng MySQL client.
+| Path | Description |
+|---|---|
+| `index.php` | Main entry point of the application |
+| `config/db.php` | Database connection configuration |
+| `controllers/` | Handles request logic |
+| `models/` | Contains data models and database operations |
+| `views/` | Contains UI pages and layout files |
+| `assets/` | Contains CSS, images, and JavaScript files |
+| `ajax/` | Contains AJAX request handlers |
+| `phone_shop.sql` | SQL file used to create/import the database |
 
-2. Tạo database, ví dụ tên:
+---
 
-`CREATE DATABASE phone_shop CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;`
+## Installation
 
-3. Import dữ liệu từ file phone_shop.sql:
+Clone the repository or copy the project folder to your local machine.
 
-`phpMyAdmin: chọn DB phone_shop → tab Import → chọn file phone_shop.sql → Go.`
+Example location:
 
-Hoặc MySQL CLI:
+```bash
+~/Projects/Phone_StoreV2
+```
 
-`mysql -u root -p phone_shop < /đường/dẫn/tới/phone_shop.sql`
+Move into the project folder:
 
-## 4. Cấu hình kết nối database
+```bash
+cd ~/Projects/Phone_StoreV2
+```
 
-1. Mở file:
+---
 
+## Database Setup
+
+### Step 1: Create Database
+
+Open phpMyAdmin or use MySQL CLI and create a database named `phone_shop`.
+
+```sql
+CREATE DATABASE phone_shop
+CHARACTER SET utf8mb4
+COLLATE utf8mb4_unicode_ci;
+```
+
+### Step 2: Import Database
+
+Import the `phone_shop.sql` file into the `phone_shop` database.
+
+#### Option 1: Using phpMyAdmin
+
+1. Open phpMyAdmin.
+2. Select the `phone_shop` database.
+3. Go to the **Import** tab.
+4. Choose the `phone_shop.sql` file.
+5. Click **Go**.
+
+#### Option 2: Using MySQL CLI
+
+```bash
+mysql -u root -p phone_shop < /path/to/phone_shop.sql
+```
+
+Replace `/path/to/phone_shop.sql` with the actual path to your SQL file.
+
+---
+
+## Database Configuration
+
+Open the database configuration file:
+
+```text
 config/db.php
+```
 
+Update the database connection information if needed:
 
-2. Kiểm tra / chỉnh lại các thông tin sau cho đúng với máy bạn:
-
+```php
 class Database {
-    // Gợi ý: dùng 127.0.0.1 để tránh lỗi socket trên macOS
+    // Use 127.0.0.1 to avoid socket issues on macOS
     private $host = '127.0.0.1';
     private $db_name = 'phone_shop';
     private $username = 'root';
-    private $password = '';     // nếu MySQL có mật khẩu thì điền vào đây
-    private $port = '3306';     // đổi nếu MySQL chạy port khác (ví dụ 3307)
+    private $password = '';
+    private $port = '3306';
 
-    ...
+    // ...
 }
+```
 
+### Common Local Configuration
 
-3. Nếu bạn dùng XAMPP mặc định trên macOS/Windows:
+If you use the default XAMPP configuration:
 
-host: 127.0.0.1 hoặc localhost
+| Field | Value |
+|---|---|
+| Host | `127.0.0.1` or `localhost` |
+| Username | `root` |
+| Password | empty |
+| Port | `3306` |
+| Database | `phone_shop` |
 
-user: root
+---
 
-password: trống
+## Run the Project
 
-port: 3306
+There are two common ways to run this project locally.
 
-## 5. Cách chạy project
+---
 
-Có 2 cách phổ biến:
+### Option A: Using PHP Built-in Server
 
-# Cách A – Dùng PHP built-in server (nhanh, gọn)
+Start MySQL first, then open Terminal or Command Prompt and go to the project folder:
 
-1. Mở Terminal / Command Prompt.
+```bash
+cd /path/to/Phone_StoreV2
+```
 
-Đi tới thư mục project:
+Run the PHP built-in server:
 
-`cd /đường/dẫn/tới/Phone_Store_Web_dev`
+```bash
+php -S localhost:8000
+```
 
+Open your browser and visit:
 
-2. Chạy server:
-
-`php -S localhost:8000`
-
-
-3. Mở trình duyệt và truy cập:
-
-Trang chính:
+```text
 http://localhost:8000/index.php
+```
 
-Router index.php sẽ tự include các view tương ứng (page=home, page=shop, page=contact, ...).
+The `index.php` file works as the front controller and loads pages based on query parameters such as:
 
-⚠️ Đảm bảo MySQL đang chạy trước khi mở website.
+```text
+?page=home
+?page=shop
+?page=contact
+```
 
-# Cách B – Dùng XAMPP (Apache + MySQL)
+---
 
-1. Mở XAMPP:
+### Option B: Using XAMPP
 
-Bật Apache và MySQL.
+1. Open XAMPP.
+2. Start **Apache** and **MySQL**.
+3. Copy the project folder into the XAMPP `htdocs` directory.
 
-2. Copy folder project vào thư mục htdocs của XAMPP, ví dụ:
+macOS example:
 
-/Applications/XAMPP/htdocs/Phone_Store_Web_dev   (macOS)
-C:\xampp\htdocs\Phone_Store_Web_dev              (Windows)
+```text
+/Applications/XAMPP/htdocs/Phone_StoreV2
+```
 
+Windows example:
 
-3. Mở trình duyệt:
+```text
+C:\xampp\htdocs\Phone_StoreV2
+```
 
-http://localhost/Phone_Store_Web_dev/index.php
+Open your browser and visit:
+
+```text
+http://localhost/Phone_StoreV2/index.php
+```
+
+---
+
+## Notes
+
+- Make sure MySQL is running before opening the website.
+- If the database connection fails, check the values in `config/db.php`.
+- If the project folder name is changed, update the URL accordingly.
+- If you use a different MySQL port, update the `$port` value in `config/db.php`.
+- On macOS, using `127.0.0.1` instead of `localhost` may help avoid socket-related connection errors.
+
+---
+
+## Author
+
+**Nguyen Nhat Huy**
+
+GitHub: [iAmHuyyy](https://github.com/iAmHuyyy)
